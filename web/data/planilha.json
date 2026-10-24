@@ -1,0 +1,188 @@
+{
+  "fonte": "projecao_trafego_consultoria (1).xlsx",
+  "premissas": {
+    "custoOperacao": 18000,
+    "alunosAtivos": 187,
+    "entradasOrganicas": 16,
+    "fechamentoOrganico": 0.1666666667,
+    "leadsOrganicos": 96,
+    "capacidadeEntradas": 35,
+    "teto": 230,
+    "permanencia": 6
+  },
+  "planos": [
+    {
+      "nome": "Trimestral",
+      "preco": 899,
+      "meses": 3,
+      "vendas": 33,
+      "peso": 0.5238095238,
+      "valorMensal": 299.6666667
+    },
+    {
+      "nome": "Semestral",
+      "preco": 1349,
+      "meses": 6,
+      "vendas": 27,
+      "peso": 0.4285714286,
+      "valorMensal": 224.8333333
+    },
+    {
+      "nome": "Anual",
+      "preco": 2349,
+      "meses": 12,
+      "vendas": 3,
+      "peso": 0.04761904762,
+      "valorMensal": 195.75
+    }
+  ],
+  "indicadores": {
+    "ticketMedio": 1160.904762,
+    "valorMensalMedio": 262.6468254,
+    "ltv": 1575.880952,
+    "custoAtendimentoMes": 96.25668449,
+    "custoAtendimentoPeriodo": 577.540107,
+    "cacEquilibrio": 998.3408454,
+    "folgaEntradas": 19,
+    "entradasManutencao": 7.166666667
+  },
+  "cenarios": [
+    {
+      "nome": "Conservador",
+      "cpl": 50,
+      "fechamento": 0.08,
+      "cac": 625
+    },
+    {
+      "nome": "Realista",
+      "cpl": 35,
+      "fechamento": 0.12,
+      "cac": 291.6666667
+    },
+    {
+      "nome": "Otimista",
+      "cpl": 25,
+      "fechamento": 0.1666666667,
+      "cac": 150
+    }
+  ],
+  "verbas": [
+    3000,
+    5000,
+    8000
+  ],
+  "projecao": [
+    {
+      "cenario": "Conservador",
+      "verba": 3000,
+      "leads": 60,
+      "alunosPotencial": 4.8,
+      "alunos": 4.8,
+      "resultado": 1792.036058,
+      "verbaManutencao": 4479.166667
+    },
+    {
+      "cenario": "Conservador",
+      "verba": 5000,
+      "leads": 100,
+      "alunosPotencial": 8,
+      "alunos": 8,
+      "resultado": 2986.726763,
+      "verbaManutencao": 4479.166667
+    },
+    {
+      "cenario": "Conservador",
+      "verba": 8000,
+      "leads": 160,
+      "alunosPotencial": 12.8,
+      "alunos": 12.8,
+      "resultado": 4778.762821,
+      "verbaManutencao": 4479.166667
+    },
+    {
+      "cenario": "Realista",
+      "verba": 3000,
+      "leads": 85.71428571,
+      "alunosPotencial": 10.28571429,
+      "alunos": 10.28571429,
+      "resultado": 7268.648696,
+      "verbaManutencao": 2090.277778
+    },
+    {
+      "cenario": "Realista",
+      "verba": 5000,
+      "leads": 142.8571429,
+      "alunosPotencial": 17.14285714,
+      "alunos": 17.14285714,
+      "resultado": 12114.41449,
+      "verbaManutencao": 2090.277778
+    },
+    {
+      "cenario": "Realista",
+      "verba": 8000,
+      "leads": 228.5714286,
+      "alunosPotencial": 27.42857143,
+      "alunos": 19,
+      "resultado": 10968.47606,
+      "verbaManutencao": 2090.277778
+    },
+    {
+      "cenario": "Otimista",
+      "verba": 3000,
+      "leads": 120,
+      "alunosPotencial": 20,
+      "alunos": 19,
+      "resultado": 15968.47606,
+      "verbaManutencao": 1075
+    },
+    {
+      "cenario": "Otimista",
+      "verba": 5000,
+      "leads": 200,
+      "alunosPotencial": 33.33333333,
+      "alunos": 19,
+      "resultado": 13968.47606,
+      "verbaManutencao": 1075
+    },
+    {
+      "cenario": "Otimista",
+      "verba": 8000,
+      "leads": 320,
+      "alunosPotencial": 53.33333333,
+      "alunos": 19,
+      "resultado": 10968.47606,
+      "verbaManutencao": 1075
+    }
+  ],
+  "limiteBomCac": 499.1704227,
+  "sensibilidade": {
+    "cpls": [
+      20,
+      25,
+      30,
+      35,
+      40,
+      50,
+      60,
+      80
+    ],
+    "fechamentos": [
+      0.06,
+      0.08,
+      0.1,
+      0.12,
+      0.15,
+      0.1666666667
+    ]
+  },
+  "listaEspera": {
+    "verba": 1000,
+    "cplRelativo": 1,
+    "conversaoRelativa": 0.5,
+    "cacMedio": 343.9922481,
+    "cacEspera": 583.3333333,
+    "cacAnuncio": 291.6666667,
+    "alunosDaEspera": 5.142857143,
+    "verbaNormalMax": 5000
+  }
+}
