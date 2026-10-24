@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // gera .next/standalone com um server.js mínimo para a imagem Docker
+  output: "standalone",
   cacheComponents: true,
   partialPrefetching: true,
   turbopack: {

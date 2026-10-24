@@ -1,0 +1,13 @@
+services:
+  apresentacao:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - HOSTNAME=0.0.0.0
+    # O Easypanel roteia o domínio até esta porta pela rede interna; não publique no host.
+    expose:
+      - "3000"
