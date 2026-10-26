@@ -28,6 +28,13 @@ const nextConfig: NextConfig = {
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },
+  // links antigos da bio (/links, /links-2) caem na LP, mantendo os UTMs
+  async redirects() {
+    return [
+      { source: "/links", destination: "/", permanent: false },
+      { source: "/links-2", destination: "/", permanent: false },
+    ];
+  },
 };
 
 export default nextConfig;
