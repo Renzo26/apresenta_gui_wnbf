@@ -1,0 +1,102 @@
+@import "tailwindcss";
+
+/* telas altas o suficiente para elementos fixos (sticky) */
+@custom-variant tall (@media (min-height: 760px));
+
+@theme {
+  /* Paleta tirada da marca: o azul do logo DLM, o bronze da medalha WNBF e um papel claro */
+  --color-night: #080a24;
+  --color-navy: #10154a;
+  --color-indigo: #2a2fb8;
+  --color-indigo-soft: #8f94ff;
+  --color-bone: #f2efe8;
+  --color-sand: #e4dfd3;
+  --color-ink: #12131c;
+  --color-steel: #6c6f80;
+  --color-bronze: #c9a25b;
+  --color-bronze-deep: #9c7a3a;
+
+  --font-display: var(--font-anton), "Arial Narrow", sans-serif;
+  --font-serif: var(--font-instrument), Georgia, serif;
+  --font-sans: var(--font-manrope), system-ui, sans-serif;
+
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html {
+  background: var(--color-night);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-night);
+  overflow-x: clip;
+}
+
+@media (min-width: 1920px) {
+  html {
+    font-size: 112.5%;
+  }
+}
+@media (min-width: 2400px) {
+  html {
+    font-size: 131.25%;
+  }
+}
+
+::selection {
+  background: var(--color-indigo);
+  color: var(--color-bone);
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+.lenis [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+/* Textura de grão — tira o ar "digital liso" dos painéis */
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  opacity: 0.45;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 .14 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@keyframes scrollcue {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(200%);
+  }
+}
+
+/* máscara do SplitText — folga para acentos e descendentes */
+.split-line-inner-mask {
+  padding-block: 0.08em;
+  margin-block: -0.08em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
