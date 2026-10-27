@@ -20,7 +20,8 @@ ENV NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL}
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN npm run build
+# public/ pode não vir do Git (pasta vazia não é versionada); o runner copia ela
+RUN mkdir -p public && npm run build
 
 # ---------- runtime ----------
 FROM base AS runner
