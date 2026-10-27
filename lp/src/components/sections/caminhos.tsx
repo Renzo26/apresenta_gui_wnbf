@@ -7,7 +7,7 @@ import { BookOpen, Check, ClipboardList } from "lucide-react";
 import { motion } from "motion/react";
 import Image from "next/image";
 import { useRef } from "react";
-import treino from "@/assets/jayme-treino.jpg";
+import palco from "@/assets/jayme-palco.jpg";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { MagneticButton } from "@/components/ui/magnetic-button";
 import { SplitReveal } from "@/components/ui/split-reveal";
@@ -64,12 +64,12 @@ export function Caminhos() {
           <article className="caminho group relative isolate flex min-h-[34rem] flex-col justify-end overflow-hidden rounded-[2rem] bg-night p-6 text-bone sm:p-9 lg:col-span-7 lg:row-span-2">
             <div className="caminho-img absolute -inset-y-[10%] inset-x-0 -z-10">
               <Image
-                src={treino}
-                alt="Jayme De Lamadrid treinando ao ar livre"
+                src={palco}
+                alt="Jayme De Lamadrid no palco de uma competição da WNBF"
                 fill
                 placeholder="blur"
                 sizes="(min-width: 1024px) 720px, 100vw"
-                className="object-cover object-[50%_25%] transition-transform duration-[1.6s] ease-(--ease-soft) group-hover:scale-[1.04]"
+                className="object-cover object-[50%_20%] transition-transform duration-[1.6s] ease-(--ease-soft) group-hover:scale-[1.04]"
               />
             </div>
             <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-t from-night via-night/75 to-night/5" />

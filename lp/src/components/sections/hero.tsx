@@ -1,12 +1,13 @@
 "use client";
 
 import { useGSAP } from "@gsap/react";
-import { motion } from "motion/react";
+import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
 import { useRef } from "react";
-import palco from "@/assets/jayme-palco.jpg";
+import podio from "@/assets/jayme-podio.jpg";
+import recorte from "@/assets/jayme-recorte.png";
 import { MagneticButton } from "@/components/ui/magnetic-button";
 import { SplitReveal } from "@/components/ui/split-reveal";
 import { CTA } from "@/lib/content";
@@ -20,27 +21,42 @@ const fadeUp = (i: number) => ({
   transition: { delay: INTRO_DURATION + 0.35 + i * 0.1, duration: 0.9, ease: [0.22, 1, 0.36, 1] as const },
 });
 
-/** Hero centrado: a foto é o palco, o título entra na frente dela e os dois CTAs ficam logo abaixo. */
+/**
+ * Hero em camadas: palco da WNBF tingido de azul ao fundo, o Jayme recortado à frente
+ * e título + 2 CTAs presos na base. A altura é travada na tela, então os CTAs sempre aparecem.
+ */
 export function Hero() {
   const ref = useRef<HTMLElement>(null);
+
+  // parallax pelo mouse: fundo e atleta andam em sentidos opostos
+  const mx = useMotionValue(0);
+  const my = useMotionValue(0);
+  const sx = useSpring(mx, { stiffness: 60, damping: 20 });
+  const sy = useSpring(my, { stiffness: 60, damping: 20 });
+  const fundoX = useTransform(sx, (v) => v * -18);
+  const fundoY = useTransform(sy, (v) => v * -12);
+  const atletaX = useTransform(sx, (v) => v * 14);
+  const atletaY = useTransform(sy, (v) => v * 6);
+
+  const onMove = (e: React.PointerEvent) => {
+    if (e.pointerType !== "mouse") return;
+    const r = e.currentTarget.getBoundingClientRect();
+    mx.set((e.clientX - r.left) / r.width - 0.5);
+    my.set((e.clientY - r.top) / r.height - 0.5);
+  };
 
   useGSAP(
     () => {
       const mm = gsap.matchMedia();
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        gsap.fromTo(
-          ".hero-arch",
-          { clipPath: "inset(100% 0 0 0 round 999px 999px 2rem 2rem)" },
-          { clipPath: "inset(0% 0 0 0 round 999px 999px 2rem 2rem)", duration: 1.6, ease: "expo.inOut", delay: INTRO_DURATION - 0.5 },
-        );
-        gsap.from(".hero-arch-img", { scale: 1.3, duration: 2.2, ease: "expo.out", delay: INTRO_DURATION - 0.3 });
-        gsap.from(".hero-spot", { autoAlpha: 0, scale: 0.6, duration: 2, ease: "expo.out", delay: INTRO_DURATION - 0.4 });
+        gsap.from(".hero-fundo-inner", { scale: 1.25, autoAlpha: 0, duration: 2.4, ease: "expo.out", delay: INTRO_DURATION - 0.6 });
+        gsap.from(".hero-atleta-inner", { yPercent: 10, autoAlpha: 0, duration: 1.8, ease: "expo.out", delay: INTRO_DURATION - 0.35 });
+        gsap.from(".hero-brilho", { scale: 0.5, autoAlpha: 0, duration: 2, ease: "expo.out", delay: INTRO_DURATION - 0.4 });
 
         const st = { trigger: ref.current, start: "top top", end: "bottom top", scrub: true };
-        gsap.to(".hero-arch-inner", { yPercent: 10, ease: "none", scrollTrigger: st });
-        gsap.to(".hero-arch", { scale: 0.92, ease: "none", scrollTrigger: st });
-        gsap.to(".hero-title", { yPercent: -25, ease: "none", scrollTrigger: st });
-        gsap.to(".hero-mono", { scale: 1.15, autoAlpha: 0, ease: "none", scrollTrigger: st });
+        gsap.to(".hero-fundo-scroll", { yPercent: 18, ease: "none", scrollTrigger: st });
+        gsap.to(".hero-atleta-scroll", { yPercent: 8, scale: 0.96, ease: "none", scrollTrigger: st });
+        gsap.to(".hero-title", { yPercent: -30, ease: "none", scrollTrigger: st });
       });
     },
     { scope: ref },
@@ -48,61 +64,50 @@ export function Hero() {
 
   return (
     <section id="inicio" ref={ref} className="p-2.5 sm:p-4">
-      {/* altura travada na tela: texto e CTAs ficam embaixo e a foto ocupa todo o espaço que sobra */}
-      <div className="grain relative isolate flex h-[calc(100svh-1.25rem)] min-h-[34rem] flex-col items-center overflow-hidden rounded-[2rem] bg-night px-5 pb-6 pt-20 text-center text-bone sm:h-[calc(100svh-2rem)] sm:rounded-[2.75rem] sm:pb-8 sm:pt-24">
-        {/* holofote de palco atrás da foto */}
+      {/* altura travada na tela: texto e CTAs ficam embaixo, as imagens preenchem o resto */}
+      <div
+        onPointerMove={onMove}
+        className="relative isolate flex h-[calc(100svh-1.25rem)] min-h-[34rem] flex-col items-center justify-end overflow-hidden rounded-[2rem] bg-night px-5 pb-6 text-center text-bone sm:h-[calc(100svh-2rem)] sm:rounded-[2.75rem] sm:pb-8"
+      >
+        {/* 1 · fundo: palco da WNBF, sem cor e tingido no azul da marca */}
+        <motion.div aria-hidden style={{ x: fundoX, y: fundoY }} className="absolute -inset-8 -z-30">
+          <div className="hero-fundo-scroll absolute inset-0">
+            <div className="hero-fundo-inner absolute inset-0">
+              <Image src={podio} alt="" fill preload placeholder="blur" sizes="100vw" className="object-cover object-[50%_30%] opacity-40 blur-[3px] grayscale" />
+              <div className="absolute inset-0 bg-indigo mix-blend-multiply" />
+            </div>
+          </div>
+          <div className="absolute inset-0 bg-[radial-gradient(70%_60%_at_50%_35%,transparent_0%,rgba(8,10,36,0.55)_60%,#080a24_100%)]" />
+        </motion.div>
+
+        {/* 2 · brilho atrás do atleta, para destacar a silhueta */}
         <div
           aria-hidden
-          className="hero-spot pointer-events-none absolute left-1/2 top-[-10%] -z-10 h-[120%] w-[min(80rem,160vw)] -translate-x-1/2"
-          style={{ background: "radial-gradient(45% 45% at 50% 38%, rgba(42,47,184,0.8) 0%, rgba(16,21,74,0.6) 45%, transparent 75%)" }}
+          className="hero-brilho pointer-events-none absolute left-1/2 top-[4%] -z-20 aspect-square w-[min(64rem,150vw)] -translate-x-1/2 rounded-full"
+          style={{ background: "radial-gradient(closest-side, rgba(90,96,255,0.5), rgba(42,47,184,0.22) 55%, transparent)" }}
         />
-        <span
-          aria-hidden
-          className="hero-mono pointer-events-none absolute left-1/2 top-[40%] -z-10 hidden -translate-x-1/2 -translate-y-1/2 select-none font-display text-[clamp(16rem,48vw,46rem)] leading-none text-bone/[0.035] sm:block"
-        >
-          DLM
-        </span>
 
-        {/* foto central: cresce até preencher a altura livre */}
-        <div className="flex min-h-0 w-full flex-1 justify-center">
-          <div className="relative aspect-[3/4] h-full max-w-full sm:aspect-[4/5]">
-            <div className="hero-arch absolute inset-0 overflow-hidden rounded-b-[2rem] rounded-t-full shadow-[0_60px_120px_-40px_rgba(0,0,0,0.95)]">
-              <div className="hero-arch-inner absolute -inset-y-[8%] inset-x-0">
-                <Image
-                  src={palco}
-                  alt="Jayme De Lamadrid posando no palco de uma competição da WNBF"
-                  fill
-                  preload
-                  placeholder="blur"
-                  sizes="(min-width: 640px) 560px, 90vw"
-                  className="hero-arch-img object-cover object-[50%_18%]"
-                />
-              </div>
-              <div aria-hidden className="absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-night from-15% via-night/70 to-transparent" />
+        {/* 3 · o Jayme recortado, grande e centralizado; a parte de baixo some sob o texto */}
+        <motion.div style={{ x: atletaX, y: atletaY }} className="pointer-events-none absolute inset-x-0 bottom-0 top-24 -z-10 sm:top-[clamp(5.5rem,13svh,8rem)]">
+          <div className="hero-atleta-scroll absolute inset-0">
+            <div className="hero-atleta-inner absolute left-1/2 top-0 aspect-[685/1335] h-[112%] -translate-x-1/2 sm:h-[138%]">
+              <Image
+                src={recorte}
+                alt="Jayme De Lamadrid, atleta WNBF PRO"
+                fill
+                preload
+                sizes="(min-width: 640px) 60vw, 130vw"
+                className="object-contain object-top drop-shadow-[0_30px_60px_rgba(0,0,0,0.6)]"
+              />
             </div>
-
-            {/* selo giratório */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.6 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: INTRO_DURATION + 0.6, duration: 1, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute -right-3 top-[14%] grid size-20 place-items-center rounded-full bg-bronze text-night sm:-right-14 sm:size-32"
-            >
-              <svg viewBox="0 0 100 100" className="absolute inset-0 size-full animate-[spin_18s_linear_infinite]" aria-hidden>
-                <defs>
-                  <path id="selo" d="M50,50 m-37,0 a37,37 0 1,1 74,0 a37,37 0 1,1 -74,0" />
-                </defs>
-                <text className="fill-current text-[7.4px] font-extrabold uppercase tracking-[0.16em]">
-                  <textPath href="#selo">natural bodybuilding • wnbf pro •</textPath>
-                </text>
-              </svg>
-              <span className="font-display text-lg sm:text-3xl">DLM</span>
-            </motion.div>
           </div>
-        </div>
+        </motion.div>
 
-        {/* bloco fixo: título por cima da base da foto, frase e os 2 CTAs */}
-        <div className="hero-title relative z-10 -mt-[clamp(5rem,17svh,10rem)] shrink-0">
+        {/* 4 · escurece a base para o texto ler bem */}
+        <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-[60%] bg-gradient-to-t from-night from-25% via-night/75 to-transparent" />
+
+        {/* bloco fixo: título, frase e os 2 CTAs */}
+        <div className="hero-title relative shrink-0">
           <motion.p {...fadeUp(0)} className="mb-2 text-[0.7rem] font-bold uppercase tracking-[0.3em] text-bronze sm:mb-3 sm:text-sm">
             Jayme De Lamadrid · WNBF PRO
           </motion.p>
@@ -110,7 +115,7 @@ export function Hero() {
             as="h1"
             onScroll={false}
             delay={INTRO_DURATION - 0.3}
-            className="font-display text-[length:clamp(2.5rem,min(10.5vw,8.5svh),8rem)] uppercase leading-[0.9] tracking-[0.005em] [text-shadow:0_10px_40px_rgba(8,10,36,0.7)]"
+            className="font-display text-[length:clamp(2.5rem,min(10.5vw,9svh),8.5rem)] uppercase leading-[0.9] tracking-[0.005em] [text-shadow:0_10px_40px_rgba(8,10,36,0.8)]"
           >
             Seu melhor físico,
             <br />
@@ -118,18 +123,18 @@ export function Hero() {
           </SplitReveal>
         </div>
 
-        <motion.p {...fadeUp(1)} className="relative z-10 mt-3 shrink-0 text-base leading-snug text-bone/85 sm:mt-4 sm:text-xl lg:text-2xl">
+        <motion.p {...fadeUp(1)} className="relative mt-3 shrink-0 text-base leading-snug text-bone/85 sm:mt-4 sm:text-xl lg:text-2xl">
           Treino e dieta para naturais, com o Jayme do seu lado.
         </motion.p>
 
         <motion.div
           {...fadeUp(2)}
-          className="relative z-10 mt-5 flex w-full max-w-md shrink-0 flex-col items-stretch gap-2.5 sm:mt-6 sm:w-auto sm:max-w-none sm:flex-row sm:items-center sm:gap-3"
+          className="relative mt-5 flex w-full max-w-md shrink-0 flex-col items-stretch gap-2.5 sm:mt-6 sm:w-auto sm:max-w-none sm:flex-row sm:items-center sm:gap-3"
         >
           <MagneticButton href={CTA.consultoria} external className="px-8 py-4 text-[0.95rem] sm:px-9 sm:py-5 sm:text-base">
             Quero a consultoria
           </MagneticButton>
-          <MagneticButton href="#caminhos" variant="outline-light" icon={false} className="px-8 py-4 text-[0.95rem] sm:px-9 sm:py-5 sm:text-base">
+          <MagneticButton href="#caminhos" variant="outline-light" icon={false} className="px-8 py-4 text-[0.95rem] backdrop-blur-sm sm:px-9 sm:py-5 sm:text-base">
             Planilhas e livro
           </MagneticButton>
         </motion.div>
