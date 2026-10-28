@@ -51,7 +51,7 @@ export function Metodo() {
                 Como funciona
               </Eyebrow>
               <SplitReveal className="mt-6 font-display text-[clamp(2.8rem,5.5vw,5.2rem)] uppercase leading-[0.92]">
-                Um método, <span className="font-serif normal-case italic text-indigo-soft">cinco passos</span>
+                Um plano, <span className="font-serif normal-case italic text-indigo-soft">cinco passos</span>
               </SplitReveal>
               <p className="mt-6 max-w-sm leading-relaxed text-bone/65">
                 Nada de planilha genérica. Cada etapa existe para o seu plano ficar do seu tamanho e continuar evoluindo com você.

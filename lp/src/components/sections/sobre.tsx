@@ -3,7 +3,7 @@
 import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Award, BookOpen, Leaf, Users } from "lucide-react";
+import { Award, BookOpen, GraduationCap, Leaf, Users } from "lucide-react";
 import { motion } from "motion/react";
 import Image from "next/image";
 import { useRef } from "react";
@@ -16,9 +16,14 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const FATOS = [
   { icon: Award, titulo: "Primeiro brasileiro campeão da WNBF", texto: "A federação internacional de fisiculturismo natural." },
+  {
+    icon: GraduationCap,
+    titulo: "Formado na Europa",
+    texto: "Anos de experiência tanto em sala de musculação como em consultoria online.",
+  },
   { icon: Users, titulo: "+14 mil alunos", texto: "Entre eles, atletas naturais como Bruno Macedo e Alison Fit." },
   { icon: BookOpen, titulo: "Autor de A Musculação para Naturais", texto: "O livro do Jayme sobre musculação para quem é natural." },
-  { icon: Leaf, titulo: "Defensor do esporte natural", texto: "Treinador e comunicador em musculação, sem atalhos." },
+  { icon: Leaf, titulo: "Pioneiro do esporte natural", texto: "Treinador e comunicador em musculação, sem atalhos." },
 ];
 
 export function Sobre() {
@@ -94,7 +99,7 @@ export function Sobre() {
                 key={f.titulo}
                 whileHover={{ y: -5 }}
                 transition={{ type: "spring", stiffness: 260, damping: 20 }}
-                className={`fato group rounded-[1.5rem] p-5 ${i === 0 ? "bg-night text-bone" : "border border-night/10 bg-bone"}`}
+                className={`fato group rounded-[1.5rem] p-5 ${i === 0 ? "bg-night text-bone sm:col-span-2" : "border border-night/10 bg-bone"}`}
               >
                 <f.icon className={`size-6 transition-transform duration-500 group-hover:-rotate-12 ${i === 0 ? "text-bronze" : "text-indigo"}`} strokeWidth={1.4} />
                 <h3 className="mt-5 font-display text-xl uppercase leading-tight tracking-wide">{f.titulo}</h3>
