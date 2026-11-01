@@ -171,7 +171,7 @@ export function BfLeadForm() {
                 type="submit"
                 className="mt-2 w-full rounded-full bg-ouro py-4 text-sm font-extrabold uppercase tracking-[0.08em] text-carvao transition-colors hover:bg-bone"
               >
-                Continuar no WhatsApp
+                Entrar em contato
               </button>
               <p className="flex items-center justify-center gap-1.5 text-center text-[0.7rem] text-bone/45">
                 <Lock className="size-3" /> Seus dados são usados só para o seu atendimento.
