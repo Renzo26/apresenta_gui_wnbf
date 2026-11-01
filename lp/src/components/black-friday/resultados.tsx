@@ -77,13 +77,22 @@ export function BfResultados() {
           <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5">
             {RESULTADOS.map((r, i) => (
               <li key={i} className="res-card flex flex-col overflow-hidden rounded-[1.75rem] bg-carvao text-bone">
-                {/* fotos inteiras: cada uma no mesmo quadro, sem recorte */}
+                {/* fotos inteiras: cada uma no mesmo quadro, sem recorte; o espaço que sobra é a própria foto desfocada */}
                 <div className="grid grid-cols-2 gap-1.5 p-1.5">
                   {[
                     { img: r.antes, rotulo: "Antes" },
                     { img: r.depois, rotulo: "Depois" },
                   ].map((f) => (
                     <div key={f.rotulo} className="relative aspect-[3/4] overflow-hidden rounded-[1.25rem] bg-grafite">
+                      {/* fundo: a mesma foto desfocada preenche o quadro (mesmo arquivo, não baixa de novo) */}
+                      <Image
+                        src={f.img}
+                        alt=""
+                        aria-hidden
+                        fill
+                        sizes="(min-width: 1024px) 200px, (min-width: 640px) 25vw, 45vw"
+                        className="scale-125 object-cover opacity-70 blur-xl"
+                      />
                       <Image
                         src={f.img}
                         alt={`${r.nome ?? "Aluno da consultoria"}: foto de ${f.rotulo.toLowerCase()}`}
