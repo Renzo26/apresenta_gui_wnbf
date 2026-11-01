@@ -60,19 +60,17 @@ export const DEPOIMENTOS = [
   { nome: "Aluno da consultoria", resultado: "+3 kg", rotulo: "de músculo", texto: "Evolução limpa, com o básico bem orientado." },
 ];
 
-/** Depoimentos com o texto completo da página da consultoria (delamadridteam.com/consultoria). */
-export const DEPOIMENTOS_COMPLETOS = [
+/** Os 6 resultados da página da consultoria (delamadridteam.com/consultoria), na mesma ordem e com o texto completo. */
+export const DEPOIMENTOS_COMPLETOS: { nome?: string; resultado: string; rotulo: string; texto: string }[] = [
   {
-    nome: "Aluno da consultoria",
     resultado: "+4 kg",
     rotulo: "de massa magra",
     texto: "Sempre tive dificuldade em manter a consistência na dieta. Com o acompanhamento, o planejamento foi perfeitamente adaptado para a minha rotina pesada de trabalho.",
   },
-  { nome: "Aluno da consultoria", resultado: "−8 kg", rotulo: "de gordura", texto: "Ajustamos os treinos e o déficit calórico de forma extremamente precisa." },
+  { resultado: "−8 kg", rotulo: "de gordura", texto: "Ajustamos os treinos e o déficit calórico de forma extremamente precisa." },
   {
-    nome: "Aluno da consultoria",
-    resultado: "Abdômen",
-    rotulo: "definido",
+    resultado: "Definição",
+    rotulo: "abdominal",
     texto: "Não precisei fazer dietas malucas ou passar fome. Consegui definir o abdômen comendo o que gosto, apenas ajustando as quantidades e treinando com a intensidade certa.",
   },
   {
@@ -81,8 +79,8 @@ export const DEPOIMENTOS_COMPLETOS = [
     rotulo: "de músculo",
     texto: "A recomposição corporal parecia impossível para mim. O método me ensinou a treinar de verdade e a me alimentar de acordo com o meu gasto diário. Os resultados falam por si.",
   },
-  { nome: "Aluno da consultoria", resultado: "+4 kg", rotulo: "de músculo", texto: "Lapidando o físico com ganho de massa magra." },
-  { nome: "Aluno da consultoria", resultado: "+3 kg", rotulo: "de músculo", texto: "Evolução limpa, sem grandes manobras: apenas o básico bem orientado." },
+  { resultado: "+4 kg", rotulo: "de músculo", texto: "Lapidando o físico com ganho de massa magra." },
+  { resultado: "+3 kg", rotulo: "de músculo", texto: "Evolução limpa, sem grandes manobras: apenas o básico bem orientado." },
 ];
 
 export const FAQ = [
