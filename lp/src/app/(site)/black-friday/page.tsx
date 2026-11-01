@@ -4,6 +4,7 @@ import { BfFooter } from "@/components/black-friday/footer";
 import { BfHeader } from "@/components/black-friday/header";
 import { BfHero } from "@/components/black-friday/hero";
 import { BfIntro } from "@/components/black-friday/intro";
+import { BfLeadForm } from "@/components/black-friday/lead-form";
 import { BfMetodo } from "@/components/black-friday/metodo";
 import { BfPlanos } from "@/components/black-friday/planos";
 import { BfResultados } from "@/components/black-friday/resultados";
@@ -126,6 +127,8 @@ export default function BlackFriday() {
       </main>
       <BfFooter />
       <BfStickyCta />
+      {/* todo link do WhatsApp da página passa antes pelo formulário (nome, e-mail, telefone) */}
+      <BfLeadForm />
     </div>
   );
 }
