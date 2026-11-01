@@ -5,16 +5,19 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Check } from "lucide-react";
 import { motion } from "motion/react";
+import Image from "next/image";
 import { useRef } from "react";
+import medalha from "@/assets/jayme-medalha.jpg";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { MagneticButton } from "@/components/ui/magnetic-button";
 import { SplitReveal } from "@/components/ui/split-reveal";
-import { BONUS_BF, DESCONTO_BF, PARCELAS_BF, PLANOS_BF, ctaPlano, reais, valor, type PlanoBF } from "@/lib/black-friday";
-import { cn } from "@/lib/utils";
+import { BONUS_BF, DESCONTO_BF, INCLUSO_BF, PARCELAS_BF, PLANOS_BF, ctaPlano, reais, valor, type PlanoBF } from "@/lib/black-friday";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-/** Os três planos com 10% OFF, no mesmo formato dos "caminhos" da LP. No celular o anual vem primeiro. */
+const [trimestral, semestral, anual] = PLANOS_BF;
+
+/** Planos: o anual em destaque, grande e com foto; trimestral e semestral empilhados ao lado (grade 7/5, como os caminhos da LP). */
 export function BfPlanos() {
   const ref = useRef<HTMLElement>(null);
 
@@ -22,24 +25,14 @@ export function BfPlanos() {
     () => {
       const mm = gsap.matchMedia();
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        gsap.from(".plano", {
-          y: 90,
-          rotate: (i) => (i === 0 ? -2 : i === 2 ? 2 : 0),
-          autoAlpha: 0,
-          duration: 1.2,
-          ease: "expo.out",
-          stagger: 0.12,
-          scrollTrigger: { trigger: ".planos-grid", start: "top 80%" },
-        });
-        gsap.from(".plano-preco", {
-          yPercent: 60,
-          autoAlpha: 0,
-          duration: 1,
-          ease: "expo.out",
-          stagger: 0.12,
-          delay: 0.35,
-          scrollTrigger: { trigger: ".planos-grid", start: "top 80%" },
-        });
+        const st = { trigger: ".planos-grid", start: "top 80%" };
+        gsap.from(".plano", { y: 90, rotate: (i) => (i === 0 ? -2 : 2), autoAlpha: 0, duration: 1.2, ease: "expo.out", stagger: 0.12, scrollTrigger: st });
+        gsap.from(".plano-preco", { yPercent: 70, duration: 1, ease: "expo.out", stagger: 0.12, delay: 0.35, scrollTrigger: st });
+        gsap.fromTo(
+          ".plano-foto",
+          { yPercent: -8 },
+          { yPercent: 8, ease: "none", scrollTrigger: { trigger: ".planos-grid", start: "top bottom", end: "bottom top", scrub: true } },
+        );
       });
     },
     { scope: ref },
@@ -60,73 +53,106 @@ export function BfPlanos() {
           </p>
         </div>
 
-        <ul className="planos-grid mt-14 grid gap-4 lg:grid-cols-3 lg:items-stretch">
-          {PLANOS_BF.map((p) => (
-            <li key={p.id} className={cn("flex", p.destaque && "order-first lg:order-none")}>
-              <CardPlano plano={p} />
-            </li>
+        <div className="planos-grid mt-14 grid gap-4 lg:grid-cols-12">
+          {/* anual: o destaque */}
+          <motion.article
+            whileHover={{ y: -6 }}
+            transition={{ type: "spring", stiffness: 260, damping: 22 }}
+            className="plano relative isolate grid overflow-hidden rounded-[2rem] bg-ouro text-carvao sm:grid-cols-[1.25fr_1fr] lg:col-span-7 lg:row-span-2"
+          >
+            <div className="flex flex-col p-6 sm:p-9">
+              <span className="self-start rounded-full bg-carvao px-3 py-1 text-[0.65rem] font-extrabold uppercase tracking-[0.18em] text-ouro">{anual.destaque}</span>
+              <h3 className="mt-4 font-display text-[clamp(2.8rem,5vw,4.2rem)] uppercase leading-none">
+                {anual.nome} <span className="font-serif text-[0.6em] normal-case italic text-carvao/50">12 meses</span>
+              </h3>
+              <Preco plano={anual} className="mt-5" />
+              <ul className="mt-5 space-y-2 text-[0.95rem] leading-snug text-carvao/85">
+                {[`Ou ${PARCELAS_BF}x de ${reais(anual.parcela)} sem juros no cartão`, ...(anual.extra ? [anual.extra] : [])].map((t) => (
+                  <li key={t} className="flex gap-2.5">
+                    <Bolinha /> {t}
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-6 border-t border-carvao/15 pt-5">
+                <p className="text-[0.65rem] font-extrabold uppercase tracking-[0.2em] text-carvao/60">Incluso</p>
+                <ul className="mt-2 grid gap-x-4 gap-y-1.5 text-sm sm:grid-cols-2">
+                  {INCLUSO_BF.map((i) => (
+                    <li key={i.titulo}>{i.titulo}</li>
+                  ))}
+                  <li className="font-bold">+ {BONUS_BF}</li>
+                </ul>
+              </div>
+              <div className="flex-1" />
+              <MagneticButton href={ctaPlano(anual)} external variant="carvao" className="mt-8 w-full sm:w-auto sm:self-start">
+                Quero o anual
+              </MagneticButton>
+            </div>
+
+            {/* foto: some no fundo amarelo pela esquerda */}
+            <div className="relative hidden min-h-[22rem] overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_40%)] sm:block">
+              <div className="plano-foto absolute -inset-y-[10%] inset-x-0">
+                <Image src={medalha} alt="Jayme De Lamadrid com a medalha WNBF PRO" fill placeholder="blur" sizes="(min-width: 1024px) 360px, 40vw" className="object-cover object-[50%_22%]" />
+              </div>
+            </div>
+          </motion.article>
+
+          {[semestral, trimestral].map((p) => (
+            <CardMenor key={p.id} plano={p} />
           ))}
-        </ul>
+        </div>
       </div>
     </section>
   );
 }
 
-function CardPlano({ plano: p }: { plano: PlanoBF }) {
-  const claro = Boolean(p.destaque);
+function CardMenor({ plano: p }: { plano: PlanoBF }) {
   return (
     <motion.article
       whileHover={{ y: -6 }}
       transition={{ type: "spring", stiffness: 260, damping: 22 }}
-      className={cn(
-        "plano relative flex w-full flex-col rounded-[2rem] p-6 sm:p-8",
-        claro ? "bg-ouro text-carvao shadow-[0_40px_80px_-35px_rgba(138,106,18,0.8)] lg:-my-4 lg:py-12" : "bg-carvao text-bone",
-      )}
+      className="plano relative flex flex-col justify-between gap-6 rounded-[2rem] bg-carvao p-6 text-bone sm:p-8 lg:col-span-5"
     >
       <div className="flex items-start justify-between gap-3">
-        <h3 className="font-display text-[clamp(2.4rem,4vw,3.2rem)] uppercase leading-none">{p.nome}</h3>
-        <span className={cn("font-serif text-4xl italic", claro ? "text-carvao/40" : "text-bone/40")}>{p.meses}m</span>
+        <h3 className="font-display text-[clamp(2.2rem,3.4vw,2.9rem)] uppercase leading-none">{p.nome}</h3>
+        <span className="font-serif text-3xl italic text-bone/40">{p.meses} meses</span>
       </div>
-      {p.destaque && (
-        <span className="mt-3 self-start rounded-full bg-carvao px-3 py-1 text-[0.65rem] font-extrabold uppercase tracking-[0.18em] text-ouro">
-          {p.destaque}
-        </span>
-      )}
+      <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <Preco plano={p} escuro />
+          <p className="mt-3 text-sm text-bone/65">
+            {reais(p.porMes)}/mês · ou {PARCELAS_BF}x de {reais(p.parcela)} sem juros
+          </p>
+          <p className="mt-1 text-sm font-bold text-ouro">+ {BONUS_BF}</p>
+        </div>
+        <MagneticButton href={ctaPlano(p)} external variant="ouro" className="w-full shrink-0 sm:w-auto">
+          Quero esse
+        </MagneticButton>
+      </div>
+    </motion.article>
+  );
+}
 
-      <p className={cn("mt-6 text-sm", claro ? "text-carvao/70" : "text-bone/55")}>
+function Preco({ plano: p, escuro = false, className = "" }: { plano: PlanoBF; escuro?: boolean; className?: string }) {
+  return (
+    <div className={className}>
+      <p className={`text-sm ${escuro ? "text-bone/55" : "text-carvao/70"}`}>
         De <s>{reais(p.de)}</s> por
       </p>
       <div className="overflow-hidden">
         <p className="plano-preco mt-1 flex items-start font-display leading-none">
           <span className="mr-1 mt-1.5 text-xl">R$</span>
-          <span className="text-[clamp(3.4rem,13vw,4.6rem)] lg:text-[clamp(3rem,4.6vw,4.6rem)]">{valor(p.por)}</span>
+          <span className={escuro ? "text-[clamp(3rem,11vw,3.8rem)]" : "text-[clamp(3.6rem,14vw,5.4rem)]"}>{valor(p.por)}</span>
+          <span className="ml-2 self-end pb-1.5 text-xs font-bold uppercase tracking-[0.14em]">à vista</span>
         </p>
       </div>
-      <p className="mt-1 text-sm font-bold uppercase tracking-[0.14em]">à vista</p>
+    </div>
+  );
+}
 
-      <ul className={cn("mt-6 space-y-2.5 text-[0.95rem] leading-snug", claro ? "text-carvao/85" : "text-bone/80")}>
-        {[
-          `Equivale a ${reais(p.porMes)} por mês de acompanhamento`,
-          `Ou ${PARCELAS_BF}x de ${reais(p.parcela)} sem juros no cartão`,
-          ...(p.extra ? [p.extra] : []),
-        ].map((t) => (
-          <li key={t} className="flex gap-2.5">
-            <span className={cn("mt-0.5 grid size-5 shrink-0 place-items-center rounded-full", claro ? "bg-carvao text-ouro" : "bg-ouro text-carvao")}>
-              <Check className="size-3" strokeWidth={3} />
-            </span>
-            {t}
-          </li>
-        ))}
-      </ul>
-
-      <p className={cn("mt-6 border-t pt-5 font-display text-xl uppercase tracking-wide", claro ? "border-carvao/15" : "border-bone/10")}>
-        + {BONUS_BF}
-      </p>
-
-      <div className="flex-1" />
-      <MagneticButton href={ctaPlano(p)} external variant={claro ? "carvao" : "ouro"} className="mt-8 w-full">
-        Quero essa condição
-      </MagneticButton>
-    </motion.article>
+function Bolinha() {
+  return (
+    <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-carvao text-ouro">
+      <Check className="size-3" strokeWidth={3} />
+    </span>
   );
 }

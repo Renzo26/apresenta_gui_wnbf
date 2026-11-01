@@ -92,7 +92,7 @@ const jsonLd = {
 
 const FAIXA = [`Black Friday DLM`, `${DESCONTO_BF}% OFF na consultoria`, `${PARCELAS_BF}x sem juros`, `+ ${BONUS_BF}`, "100% natural", "Acompanhamento diário"];
 
-// mesma composição da LP: hero, painel claro, seção escura, resultados, painel claro, rodapé
+// mesma composição da LP (hero, painel claro, seção escura, resultados, painel claro, rodapé), com a faixa logo após o hero
 export default function BlackFriday() {
   return (
     <div className="bg-carvao">
@@ -102,10 +102,14 @@ export default function BlackFriday() {
       <main>
         <BfHero />
 
+        {/* faixa logo abaixo do hero, de ponta a ponta */}
+        <div className="overflow-hidden py-4 sm:py-6">
+          <Marquee itens={FAIXA} className="bg-ouro text-carvao" simboloCls="text-carvao/60" />
+        </div>
+
         <div className="px-2.5 sm:px-4">
           <div className="grain relative overflow-hidden rounded-[2rem] bg-bone sm:rounded-[2.75rem]">
             <BfPlanos />
-            <Marquee itens={FAIXA} className="bg-carvao text-ouro" simboloCls="text-bone" />
             <BfStatement />
           </div>
         </div>
