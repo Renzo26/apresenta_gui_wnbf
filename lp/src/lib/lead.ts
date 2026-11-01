@@ -1,5 +1,5 @@
 // Captura de lead antes do WhatsApp (página da Black Friday).
-// Os dados ainda NÃO são salvos em lugar nenhum: `registrarLead` é o único ponto a ligar no banco.
+// Os dados vão para POST /api/leads, que grava em paginas.leads (tabela criada pelo Alembic em db/).
 
 export type Lead = {
   nome: string;
@@ -12,7 +12,9 @@ export type Lead = {
   pagina: string;
   /** utm_source, utm_campaign etc. da URL, para o gestor de tráfego */
   utms: Record<string, string>;
-  criadoEm: string;
+  referrer: string;
+  /** campo invisível contra robôs: pessoa nunca preenche */
+  empresa?: string;
 };
 
 export type Campos = Pick<Lead, "nome" | "email" | "telefone">;
@@ -60,12 +62,18 @@ export function utmsDaPagina() {
 }
 
 /**
- * Registra o lead. Hoje só avisa as ferramentas de tráfego que estiverem na página (GTM/GA e Meta Pixel).
- * Para salvar no banco: enviar `lead` para uma rota do servidor (ex.: POST /api/leads) com
- * `navigator.sendBeacon` ou `fetch(..., { keepalive: true })`, para o envio não ser cortado
- * quando o WhatsApp abrir.
+ * Registra o lead: grava no banco (POST /api/leads) e avisa as ferramentas de tráfego que estiverem
+ * na página (GTM/GA e Meta Pixel). Não espera a resposta: o WhatsApp abre na hora, e o `keepalive`
+ * garante que o envio termina mesmo se a pessoa sair da página.
  */
 export function registrarLead(lead: Lead) {
+  fetch("/api/leads", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(lead),
+    keepalive: true,
+  }).catch(() => {});
+
   const w = window as Window & { dataLayer?: unknown[]; fbq?: (...args: unknown[]) => void };
   w.dataLayer?.push({ event: "generate_lead", plano: lead.plano, origem: lead.origem });
   w.fbq?.("track", "Lead", { content_name: lead.plano ?? "Black Friday" });

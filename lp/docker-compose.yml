@@ -1,4 +1,30 @@
+# Páginas do Jayme (LP, /linktree, /black-friday) — Easypanel, serviço Docker Compose.
+#
+# A página entra na rede do projeto WNBF para alcançar o Postgres (`db`), igual ao
+# sistema de check-in. Lá já existem serviços `backend`, `frontend` e `db`: por isso
+# a migração tem nome próprio (`paginas-migracao`), para o DNS não confundir containers.
+
+x-banco: &banco
+  # Só chega ao container o que está listado aqui — variável criada no Easypanel
+  # e esquecida nesta lista é ignorada em silêncio.
+  DATABASE_USER: ${DATABASE_USER:?defina DATABASE_USER}
+  DATABASE_PASSWORD: ${DATABASE_PASSWORD:?defina DATABASE_PASSWORD}
+  DATABASE_HOST: ${DATABASE_HOST:-db}
+  DATABASE_PORT: ${DATABASE_PORT:-5432}
+  DATABASE_NAME: ${DATABASE_NAME:-wnbf}
+  DATABASE_SCHEMA: ${DATABASE_SCHEMA:-paginas}
+  DATABASE_SSL: ${DATABASE_SSL:-false}
+
 services:
+  # Cria/atualiza o schema `paginas` (Alembic) e sai. A página só sobe se der certo.
+  paginas-migracao:
+    build:
+      context: ./db
+    restart: "no"
+    environment: *banco
+    networks:
+      - wnbf_db
+
   lp:
     build:
       context: .
@@ -7,7 +33,11 @@ services:
         # domínio final da LP (com https). Troque aqui ou defina no Easypanel.
         NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://seu-dominio.com.br}
     restart: unless-stopped
+    depends_on:
+      paginas-migracao:
+        condition: service_completed_successfully
     environment:
+      <<: *banco
       NODE_ENV: production
       PORT: 3000
       HOSTNAME: 0.0.0.0
@@ -17,6 +47,9 @@ services:
       - "3000"
     volumes:
       - image-cache:/app/.next/cache
+    networks:
+      - default
+      - wnbf_db
     deploy:
       resources:
         limits:
@@ -24,3 +57,10 @@ services:
 
 volumes:
   image-cache:
+
+networks:
+  # Rede do projeto WNBF no Easypanel, onde está o Postgres (`db`).
+  # Ela é criada pelo compose do WNBF; este projeto só se conecta a ela.
+  wnbf_db:
+    external: true
+    name: ${WNBF_DB_NETWORK:-portal_atletas_portal_atletas_default}

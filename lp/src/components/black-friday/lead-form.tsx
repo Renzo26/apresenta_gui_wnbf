@@ -77,7 +77,8 @@ export function BfLeadForm() {
       plano,
       pagina: window.location.pathname,
       utms: utmsDaPagina(),
-      criadoEm: new Date().toISOString(),
+      referrer: document.referrer,
+      empresa: (e.currentTarget as HTMLFormElement).querySelector<HTMLInputElement>('input[name="empresa"]')?.value,
     });
     try {
       localStorage.setItem(GUARDADO, JSON.stringify(campos));
@@ -145,6 +146,8 @@ export function BfLeadForm() {
             <p className="mt-2 text-sm leading-relaxed text-bone/65">Preencha seus dados e a equipe continua o atendimento com você no WhatsApp.</p>
 
             <form onSubmit={enviar} noValidate className="mt-6 space-y-4">
+              {/* armadilha para robôs: invisível para pessoas e leitores de tela */}
+              <input type="text" name="empresa" tabIndex={-1} autoComplete="off" aria-hidden className="absolute -left-[9999px] size-px opacity-0" />
               <div>
                 <label htmlFor="lead-nome" className="text-xs font-semibold uppercase tracking-[0.14em] text-bone/70">
                   Nome completo
