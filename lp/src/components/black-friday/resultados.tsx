@@ -8,8 +8,9 @@ import Image, { type StaticImageData } from "next/image";
 import { useRef } from "react";
 import aluno3Antes from "@/assets/aluno3-antes.jpg";
 import aluno3Depois from "@/assets/aluno3-depois.jpg";
-import alunoAntes from "@/assets/aluno-antes.jpg";
-import alunoDepois from "@/assets/aluno-depois.jpg";
+// cópias sem a faixa preta que havia embaixo das fotos originais
+import alunoAntes from "@/assets/aluno-antes-bf.jpg";
+import alunoDepois from "@/assets/aluno-depois-bf.jpg";
 import warleyAntes from "@/assets/warley-antes.jpg";
 import warleyDepois from "@/assets/warley-depois.jpg";
 import { Eyebrow } from "@/components/ui/eyebrow";
@@ -19,18 +20,17 @@ import { cn } from "@/lib/utils";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-type Par = { nome: string; periodo: string; antes: StaticImageData; depois: StaticImageData; pos: [string, string] };
+type Par = { nome: string; periodo: string; antes: StaticImageData; depois: StaticImageData };
 
-const DESTAQUE: Par = { nome: "Aluno da consultoria", periodo: "Antes → Depois", antes: aluno3Antes, depois: aluno3Depois, pos: ["50% 30%", "50% 45%"] };
 const PARES: Par[] = [
-  { nome: "Warley", periodo: "Fevereiro → Setembro", antes: warleyAntes, depois: warleyDepois, pos: ["50% 30%", "50% 25%"] },
-  // fotos com tarja: o recorte fica acima dela
-  { nome: "Aluno da consultoria", periodo: "Antes → Depois", antes: alunoAntes, depois: alunoDepois, pos: ["50% 18%", "50% 18%"] },
+  { nome: "Aluno da consultoria", periodo: "Antes → Depois", antes: aluno3Antes, depois: aluno3Depois },
+  { nome: "Warley", periodo: "Fevereiro → Setembro", antes: warleyAntes, depois: warleyDepois },
+  { nome: "Aluno da consultoria", periodo: "Antes → Depois", antes: alunoAntes, depois: alunoDepois },
 ];
 
 /**
- * Resultados: a transformação de corpo inteiro em destaque (o "depois" abre como cortina),
- * dois pares menores ao lado e os depoimentos da página da consultoria numa faixa que desliza.
+ * Resultados: antes e depois com as fotos inteiras (mesma altura, largura no formato original, sem recorte)
+ * e os depoimentos da página da consultoria numa faixa que desliza.
  */
 export function BfResultados() {
   const ref = useRef<HTMLElement>(null);
@@ -39,14 +39,7 @@ export function BfResultados() {
     () => {
       const mm = gsap.matchMedia();
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        gsap.utils.toArray<HTMLElement>(".res-depois").forEach((el) => {
-          gsap.fromTo(
-            el,
-            { clipPath: "inset(0 100% 0 0)" },
-            { clipPath: "inset(0 0% 0 0)", duration: 1.4, ease: "expo.inOut", scrollTrigger: { trigger: el, start: "top 80%" } },
-          );
-        });
-        gsap.from(".res-par", { y: 70, autoAlpha: 0, duration: 1.1, ease: "expo.out", stagger: 0.12, scrollTrigger: { trigger: ".res-grid", start: "top 80%" } });
+        gsap.from(".res-par", { y: 70, autoAlpha: 0, duration: 1.1, ease: "expo.out", stagger: 0.12, scrollTrigger: { trigger: ".res-lista", start: "top 85%" } });
 
         // depoimentos: faixa infinita que pausa com o mouse em cima
         const loop = gsap.to(".res-faixa", { xPercent: -50, ease: "none", duration: 60, repeat: -1 });
@@ -85,19 +78,22 @@ export function BfResultados() {
             </div>
           </div>
 
-          <div className="res-grid mt-12 grid gap-4 lg:grid-cols-12 lg:gap-5">
-            {/* destaque: corpo inteiro */}
-            <article className="res-par lg:col-span-6 lg:row-span-2">
-              <ParFotos par={DESTAQUE} aspecto="aspect-[9/16]" sizes="(min-width: 1024px) 300px, 46vw" />
-              <Legenda par={DESTAQUE} />
-            </article>
+        </div>
+
+        {/* fileira: centralizada quando cabe, desliza para o lado quando não cabe */}
+        <div className="mt-12 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" data-lenis-prevent-touch>
+          <ul className="res-lista mx-auto flex w-max snap-x snap-mandatory gap-4 px-6 sm:gap-6 sm:px-10">
             {PARES.map((p) => (
-              <article key={p.nome + p.periodo} className="res-par lg:col-span-6">
-                <ParFotos par={p} aspecto="aspect-square lg:aspect-[4/3]" sizes="(min-width: 1024px) 300px, 46vw" />
-                <Legenda par={p} />
-              </article>
+              <li key={p.nome + p.periodo} className="res-par flex shrink-0 snap-center flex-col">
+                <ParFotos par={p} />
+                {/* w-0 min-w-full: a legenda acompanha a largura das fotos em vez de esticar o card */}
+                <div className="mt-3 flex w-0 min-w-full flex-wrap items-baseline justify-between gap-x-4 px-1">
+                  <h3 className="font-display text-xl uppercase sm:text-2xl">{p.nome}</h3>
+                  <span className="whitespace-nowrap text-sm text-carvao/70">{p.periodo}</span>
+                </div>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
 
         {/* depoimentos */}
@@ -132,18 +128,18 @@ export function BfResultados() {
   );
 }
 
-function ParFotos({ par: a, aspecto, sizes }: { par: Par; aspecto: string; sizes: string }) {
+function ParFotos({ par: a }: { par: Par }) {
   return (
-    <div className="grid grid-cols-2 gap-1.5 overflow-hidden rounded-[1.75rem] bg-carvao/15 p-1.5">
+    <div className="flex h-[19rem] gap-1.5 rounded-[1.5rem] bg-carvao/15 p-1.5 sm:h-[22rem] xl:h-[24rem]">
       {[
-        { img: a.antes, r: "Antes", p: a.pos[0] },
-        { img: a.depois, r: "Depois", p: a.pos[1] },
+        { img: a.antes, r: "Antes" },
+        { img: a.depois, r: "Depois" },
       ].map((f) => (
-        <div key={f.r} className={cn("relative overflow-hidden rounded-[1.35rem]", aspecto, f.r === "Depois" && "res-depois")}>
-          <Image src={f.img} alt={`${a.nome}: foto de ${f.r.toLowerCase()}`} fill placeholder="blur" sizes={sizes} className="object-cover" style={{ objectPosition: f.p }} />
+        <div key={f.r} className="relative h-full overflow-hidden rounded-[1.1rem]">
+          <Image src={f.img} alt={`${a.nome}: foto de ${f.r.toLowerCase()}`} placeholder="blur" sizes="(min-width: 1024px) 320px, 45vw" className="h-full w-auto" />
           <span
             className={cn(
-              "absolute left-3 top-3 rounded-full px-2.5 py-1 text-[0.6rem] font-extrabold uppercase tracking-[0.18em]",
+              "absolute left-2.5 top-2.5 rounded-full px-2.5 py-1 text-[0.6rem] font-extrabold uppercase tracking-[0.18em]",
               f.r === "Depois" ? "bg-carvao text-ouro" : "bg-carvao/60 text-bone backdrop-blur",
             )}
           >
@@ -151,15 +147,6 @@ function ParFotos({ par: a, aspecto, sizes }: { par: Par; aspecto: string; sizes
           </span>
         </div>
       ))}
-    </div>
-  );
-}
-
-function Legenda({ par: a }: { par: Par }) {
-  return (
-    <div className="mt-3 flex items-baseline justify-between gap-4 px-1">
-      <h3 className="font-display text-2xl uppercase">{a.nome}</h3>
-      <span className="whitespace-nowrap text-sm text-carvao/70">{a.periodo}</span>
     </div>
   );
 }
