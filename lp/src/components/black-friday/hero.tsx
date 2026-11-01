@@ -168,7 +168,7 @@ export function BfHero() {
                 Ver os planos
               </MagneticButton>
               <MagneticButton href={CTA_BF} external variant="outline-light" className="whitespace-nowrap px-8 py-4 text-[0.95rem] sm:px-9 sm:py-5 sm:text-base lg:px-7 xl:px-9">
-                Falar no WhatsApp
+                Entrar em contato
               </MagneticButton>
             </motion.div>
 
