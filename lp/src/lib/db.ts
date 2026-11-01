@@ -1,4 +1,4 @@
-// Conexão com o Postgres do projeto WNBF (mesmo banco do sistema de check-in). Só no servidor.
+// Conexão com o Postgres do Supabase na VPS (banco `postgres`). Só no servidor.
 // As tabelas são criadas pelo Alembic em db/ (schema `paginas`).
 import postgres from "postgres";
 
@@ -11,8 +11,8 @@ export function db() {
   cliente ??= postgres({
     host: process.env.DATABASE_HOST ?? "db",
     port: Number(process.env.DATABASE_PORT ?? 5432),
-    database: process.env.DATABASE_NAME ?? "wnbf",
-    username: process.env.DATABASE_USER,
+    database: process.env.DATABASE_NAME ?? "postgres",
+    username: process.env.DATABASE_USER ?? "postgres",
     password: process.env.DATABASE_PASSWORD,
     // o Postgres do Docker na VPS não tem certificado; o Supabase gerenciado exige SSL
     ssl: process.env.DATABASE_SSL === "true" ? "require" : false,

@@ -30,7 +30,7 @@ def run_migrations_online() -> None:
     engine = create_engine(database_url(), poolclass=pool.NullPool)
     with engine.connect() as connection:
         # O banco é compartilhado: tudo (inclusive a tabela de versões do Alembic) fica no schema
-        # das páginas, nunca no `public` nem no `consultoria` do sistema de check-in.
+        # das páginas, nunca no `public` nem no `wnbf` do sistema de inscrições.
         connection.execute(text(f'CREATE SCHEMA IF NOT EXISTS "{SCHEMA}"'))
         connection.execute(text(f'SET search_path TO "{SCHEMA}"'))
         connection.commit()
