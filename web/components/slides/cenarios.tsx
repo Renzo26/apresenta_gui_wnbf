@@ -4,7 +4,7 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Slide } from "@/components/deck/Slide";
 import { Luz, Nota, Selo } from "@/components/ui";
-import { CENARIOS, ESPERA, EVOLUCAO, I, META_CAC, P, PROJECAO, VERBAS, corCac, mil, numero, pct, reais } from "@/lib/modelo";
+import { CENARIOS, ESPERA, EVOLUCAO, I, MEDIA_POR_VERBA, META_CAC, P, PROJECAO, VERBAS, corCac, mil, numero, pct, reais } from "@/lib/modelo";
 import type { PropsSlide } from "./tipos";
 
 const ROTULO_COR = { verde: "dentro da meta", amarelo: "acima da meta", vermelho: "prejuízo" } as const;
@@ -25,7 +25,7 @@ export function Cenarios(p: PropsSlide) {
               className={`flex flex-col gap-6 rounded-2xl border p-6 ${i === 1 ? "border-ink bg-card" : "border-line bg-card/60"}`}
             >
               <div className="flex items-center justify-between">
-                <h3 className="font-serif text-3xl">{c.nome}</h3>
+                <h3 className="font-heading text-3xl">{c.nome}</h3>
                 <Selo tipo="hipotese" />
               </div>
               <dl className="grid grid-cols-2 gap-4">
@@ -47,7 +47,7 @@ export function Cenarios(p: PropsSlide) {
                 </div>
                 <p className="num mt-1 text-5xl text-accent">{reais(c.cac)}</p>
                 <div className="relative mt-4 h-1.5 rounded-full bg-paper-2">
-                  <div data-bar data-delay={i * 0.1} className="h-full rounded-full bg-ink" style={{ width: `${(c.cac / max) * 100}%` }} />
+                  <div data-bar data-delay={i * 0.1} className="h-full rounded-full bg-barra" style={{ width: `${(c.cac / max) * 100}%` }} />
                   <span className="absolute -top-1 h-3.5 w-px bg-verde" style={{ left: `${(META_CAC / max) * 100}%` }} />
                   <span className="absolute -top-1 h-3.5 w-px bg-vermelho" style={{ left: `${(I.cacEquilibrio / max) * 100}%` }} />
                 </div>
@@ -76,7 +76,7 @@ export function PorVerba(p: PropsSlide) {
   return (
     <Slide {...p} secao="Projeção por faixa de verba" titulo="Quando a equipe lota, mais verba não vira mais aluno">
       <div data-reveal className="overflow-x-auto" data-lenis-prevent-touch>
-        <table className="w-full min-w-[640px] border-separate border-spacing-[3px] text-left">
+        <table className="w-full min-w-[820px] border-separate border-spacing-[3px] text-left">
           <thead>
             <tr>
               <th className="w-32 pb-3 align-bottom">
@@ -85,11 +85,15 @@ export function PorVerba(p: PropsSlide) {
                 </span>
               </th>
               {CENARIOS.map((c) => (
-                <th key={c.nome} className="pb-3 font-serif text-2xl font-normal">
+                <th key={c.nome} className="pb-3 font-heading text-2xl">
                   {c.nome}
                   <span className="num block font-sans text-xs text-muted">custo por aluno {reais(c.cac)}</span>
                 </th>
               ))}
+              <th className="pb-3 font-heading text-2xl text-accent">
+                Média
+                <span className="num block font-sans text-xs text-muted">dos três cenários</span>
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -106,7 +110,7 @@ export function PorVerba(p: PropsSlide) {
                         <span className="text-xs text-ink-2">alunos / mês</span>
                       </div>
                       <div className="mt-3 h-1.5 rounded-full bg-paper-2">
-                        <div data-bar className={`h-full rounded-full ${noTeto ? "bg-accent" : "bg-ink"}`} style={{ width: `${(cel.alunos / folga) * 100}%` }} />
+                        <div data-bar className={`h-full rounded-full ${noTeto ? "bg-accent" : "bg-barra"}`} style={{ width: `${(cel.alunos / folga) * 100}%` }} />
                       </div>
                       <p className="mt-3 text-sm text-ink-2">
                         <span className="num text-ink">+{mil(cel.resultado)}</span> em 6 meses
@@ -119,19 +123,122 @@ export function PorVerba(p: PropsSlide) {
                     </td>
                   );
                 })}
+                <MediaVerba verba={v} />
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <div className="mt-8 grid gap-4 md:grid-cols-2">
+      <div className="mt-8 grid gap-4 md:grid-cols-3">
         <Nota tom="alerta">
           O teto é de {folga} entradas extras por mês. Acima disso, a verba compra contatos que a equipe não consegue atender: vira desperdício.
+        </Nota>
+        <Nota>
+          <Selo tipo="hipotese" /> A média é simples: dá o mesmo peso aos três cenários e respeita o teto. Serve de ordem de grandeza, não de promessa.
         </Nota>
         <Nota>
           <Selo tipo="calculo" /> “Em 6 meses” = o que os alunos do mês deixam na permanência, já descontados o custo de atender e a verba. Vale enquanto
           há vaga.
         </Nota>
+      </div>
+    </Slide>
+  );
+}
+
+function MediaVerba({ verba }: { verba: number }) {
+  const m = MEDIA_POR_VERBA.find((x) => x.verba === verba)!;
+  return (
+    <td className="painel rounded-xl p-4 align-top text-paper">
+      <div className="flex items-baseline gap-2">
+        <span className="num text-4xl">≈ {numero(m.media)}</span>
+        <span className="text-xs text-paper/75">alunos / mês</span>
+      </div>
+      <p className="mt-3 text-sm text-paper/75">
+        entre <span className="num text-paper">{numero(m.min)}</span> e <span className="num text-paper">{numero(m.max)}</span>
+      </p>
+      <p className="mt-1 text-sm text-paper/75">
+        sem o teto, <span className="num text-paper">≈ {numero(m.mediaPotencial)}</span>
+      </p>
+    </td>
+  );
+}
+
+export function TabelaProjecao(p: PropsSlide) {
+  const folga = I.folgaEntradas;
+  const cabecalho = "pb-3 pr-4 text-xs font-normal text-ink-2";
+  const celula = "border-t py-3 pr-4";
+  return (
+    <Slide {...p} secao="Tabela da projeção" titulo="Do investimento ao aluno, tudo na mesma conta">
+      <figure data-reveal>
+        <figcaption className="mb-4 flex items-center gap-2 text-sm text-ink-2">
+          Por mês, em cada faixa de investimento <Selo tipo="hipotese" />
+        </figcaption>
+        <div className="overflow-x-auto" data-lenis-prevent-touch>
+          <table className="w-full min-w-[900px] border-collapse text-left">
+            <thead>
+              <tr>
+                <th className={cabecalho}>Investimento</th>
+                <th className={cabecalho}>Cenário</th>
+                <th className={cabecalho}>Custo por contato (CPL)</th>
+                <th className={cabecalho}>Contatos</th>
+                <th className={cabecalho}>Taxa de conversão</th>
+                <th className={cabecalho}>Custo por aluno (CAC)</th>
+                <th className={cabecalho}>Alunos que a verba traria</th>
+                <th className={cabecalho}>Com o teto de {folga}</th>
+                <th className="pb-3 pl-4 text-xs font-normal text-ink-2">Média de alunos</th>
+              </tr>
+            </thead>
+            {MEDIA_POR_VERBA.map((m) => (
+              <tbody key={m.verba}>
+                {CENARIOS.map((c, i) => {
+                  const cel = PROJECAO.find((x) => x.cenario === c.nome && x.verba === m.verba)!;
+                  const noTeto = cel.alunosPotencial > folga + 1e-6;
+                  const cor = corCac(c.cac);
+                  return (
+                    <tr key={c.nome}>
+                      {i === 0 && (
+                        <th rowSpan={CENARIOS.length} className="num border-t border-ink/40 py-3 pr-4 align-top text-2xl font-normal">
+                          {mil(m.verba, 0)}
+                        </th>
+                      )}
+                      <td className={`${celula} text-ink ${i === 0 ? "border-ink/40" : "border-line"}`}>{c.nome}</td>
+                      <td className={`${celula} num text-lg ${i === 0 ? "border-ink/40" : "border-line"}`}>{reais(c.cpl)}</td>
+                      <td className={`${celula} num text-lg ${i === 0 ? "border-ink/40" : "border-line"}`}>{numero(cel.leads)}</td>
+                      <td className={`${celula} num text-lg ${i === 0 ? "border-ink/40" : "border-line"}`}>{pct(c.fechamento, c.fechamento < 0.15 ? 0 : 1)}</td>
+                      <td className={`${celula} ${i === 0 ? "border-ink/40" : "border-line"}`}>
+                        <span className="flex items-center gap-2" title={ROTULO_COR[cor]}>
+                          <Luz cor={cor} tamanho={9} />
+                          <span className="num text-lg">{reais(c.cac)}</span>
+                        </span>
+                      </td>
+                      <td className={`${celula} ${i === 0 ? "border-ink/40" : "border-line"}`}>
+                        <span className="num text-xl">{numero(cel.alunosPotencial, cel.alunosPotencial % 1 ? 1 : 0)}</span>
+                      </td>
+                      <td className={`${celula} ${i === 0 ? "border-ink/40" : "border-line"}`}>
+                        <span className={`num text-xl ${noTeto ? "text-accent" : ""}`}>{numero(cel.alunos, cel.alunos % 1 ? 1 : 0)}</span>
+                        {noTeto && <span className="ml-2 font-mono text-[11px] uppercase tracking-wider text-accent">no teto</span>}
+                      </td>
+                      {i === 0 && (
+                        <td rowSpan={CENARIOS.length} className="painel border-t-2 border-paper-2 p-4 align-middle text-paper">
+                          <span className="num block whitespace-nowrap text-3xl">≈ {numero(m.mediaPotencial)}</span>
+                          <span className="block text-xs text-paper/75">a verba traria</span>
+                          <span className="num mt-2 block whitespace-nowrap text-3xl">≈ {numero(m.media)}</span>
+                          <span className="block text-xs text-paper/75">com o teto</span>
+                        </td>
+                      )}
+                    </tr>
+                  );
+                })}
+              </tbody>
+            ))}
+          </table>
+        </div>
+      </figure>
+      <div className="mt-8 grid gap-4 md:grid-cols-2">
+        <Nota>
+          <Selo tipo="calculo" /> CAC = custo por contato ÷ taxa de conversão. Alunos que a verba traria = investimento ÷ CAC. O teto é de {folga} entradas extras por mês: é o que a equipe atende, e o excedente não vira aluno.
+        </Nota>
+        <Nota tom="alerta">Custo por contato e conversão ainda são hipóteses. As duas primeiras semanas de campanha trocam esses valores pelos reais.</Nota>
       </div>
     </Slide>
   );
@@ -257,7 +364,7 @@ export function Evolucao(p: PropsSlide) {
         </figure>
 
         <div className="flex flex-col gap-6">
-          <div data-reveal className="rounded-2xl bg-ink p-6 text-paper">
+          <div data-reveal className="rounded-2xl painel p-6 text-paper">
             <p className="font-mono text-xs uppercase tracking-[0.18em] text-paper/60">Alunos novos em 12 meses</p>
             <p className="num mt-2 text-6xl">≈ {numero(EVOLUCAO[1].alunosTotal)}</p>
             <p className="mt-2 text-sm text-paper/75">nos três cenários. O teto iguala o volume.</p>
@@ -273,7 +380,7 @@ export function Evolucao(p: PropsSlide) {
                   <span className="num text-xl">≈ {mil(e.verbaTotal, 0)}</span>
                 </div>
                 <div className="mt-1 h-2 rounded-full bg-paper-2">
-                  <div data-bar data-delay={i * 0.1} className="h-full rounded-full" style={{ width: `${(e.verbaTotal / maxVerba) * 100}%`, background: i === 1 ? "var(--accent)" : "var(--ink)" }} />
+                  <div data-bar data-delay={i * 0.1} className="h-full rounded-full" style={{ width: `${(e.verbaTotal / maxVerba) * 100}%`, background: i === 1 ? "var(--accent)" : "var(--barra)" }} />
                 </div>
                 <p className="mt-1 font-mono text-[11px] text-muted">manutenção ≈ {mil(e.verbaManutencao)} / mês com a base cheia</p>
               </div>
@@ -328,7 +435,7 @@ export function ListaEspera(p: PropsSlide) {
               Custo por aluno, cenário realista <Selo tipo="calculo" />
             </figcaption>
             {[
-              { r: "Vindo do anúncio", v: ESPERA.cacAnuncio, cls: "bg-ink" },
+              { r: "Vindo do anúncio", v: ESPERA.cacAnuncio, cls: "bg-barra" },
               { r: "Vindo da espera", v: ESPERA.cacEspera, cls: "bg-accent" },
             ].map((b, i) => (
               <div key={b.r}>
@@ -351,7 +458,7 @@ export function ListaEspera(p: PropsSlide) {
         <div data-reveal className="flex flex-col gap-4">
           <div className="rounded-2xl border border-line bg-card p-6">
             <p className="font-mono text-xs uppercase tracking-[0.18em] text-muted">Por que custa mais</p>
-            <p className="mt-3 font-serif text-2xl leading-snug">
+            <p className="mt-3 font-heading text-2xl leading-snug">
               As vagas são limitadas. Quem vem da espera ocupa a vaga de quem viria do anúncio, e chega mais caro.
             </p>
           </div>

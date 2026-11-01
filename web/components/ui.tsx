@@ -28,7 +28,7 @@ export function Selo({ tipo, grande = false }: { tipo: TipoSelo; grande?: boolea
   return (
     <span
       title={`${s.rotulo}: ${s.texto}`}
-      className={`inline-flex w-fit shrink-0 items-center gap-1.5 rounded-full font-mono font-medium uppercase tracking-[0.12em] ${
+      className={`inline-flex w-fit shrink-0 items-center gap-1.5 rounded-[3px] font-mono font-semibold uppercase tracking-[0.14em] ${
         grande ? "px-3 py-1.5 text-xs" : "px-2 py-0.5 text-[10px]"
       }`}
       style={{ color: s.cor, background: s.fundo }}

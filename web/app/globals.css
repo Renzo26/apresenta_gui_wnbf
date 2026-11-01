@@ -1,31 +1,37 @@
 @import "tailwindcss";
 
+/* Identidade De Lamadrid Team: o azul-marinho da logo e o palco escuro da foto do atleta. */
 :root {
-  --paper: #f5f2ec;
-  --paper-2: #ece7de;
-  --card: #fbfaf7;
-  --ink: #1b1a17;
-  --ink-2: #4a4843;
-  --muted: #8a867d;
-  --line: #d9d3c7;
-  --accent: #e2531f;
-  --accent-soft: #f7d9cb;
+  --navy: #0a0f66; /* azul da logo */
+  --paper: #05071a;
+  --paper-2: #121632;
+  --card: #0a0d26;
+  --ink: #f2f3f8;
+  --ink-2: #aeb2cb;
+  --muted: #737896;
+  --line: #1e2343;
+  --accent: #5b76ff;
+  --accent-soft: #1b2675;
+  /* preenchimento das barras de dado; o destaque fica com --accent */
+  --barra: #3a4ab0;
+  --barra-2: #26307a;
 
   /* selos — cor fixa em toda a apresentação */
-  --dado: #2f5bd3;
-  --dado-soft: #e1e8fa;
-  --calculo: #4f5258;
-  --calculo-soft: #e4e4e2;
-  --hipotese: #9b4bc4;
-  --hipotese-soft: #efe3f6;
+  --dado: #78a6ff;
+  --dado-soft: #132558;
+  --calculo: #c4c8dd;
+  --calculo-soft: #1e2244;
+  --hipotese: #c28dff;
+  --hipotese-soft: #2b1b56;
 
   /* semáforo */
-  --verde: #2e8b57;
-  --amarelo: #d9a21b;
-  --vermelho: #d2382a;
+  --verde: #2fbf71;
+  --amarelo: #f2b632;
+  --vermelho: #ff5047;
 }
 
 @theme inline {
+  --color-navy: var(--navy);
   --color-paper: var(--paper);
   --color-paper-2: var(--paper-2);
   --color-card: var(--card);
@@ -35,6 +41,8 @@
   --color-line: var(--line);
   --color-accent: var(--accent);
   --color-accent-soft: var(--accent-soft);
+  --color-barra: var(--barra);
+  --color-barra-2: var(--barra-2);
   --color-dado: var(--dado);
   --color-dado-soft: var(--dado-soft);
   --color-calculo: var(--calculo);
@@ -46,17 +54,29 @@
   --color-vermelho: var(--vermelho);
 
   --font-sans: var(--font-sans);
-  --font-serif: var(--font-serif);
-  --font-mono: var(--font-mono);
+  --font-display: var(--font-display);
+  /* subtítulos e frases de destaque: Archivo condensada, mais leve que a Anton dos títulos */
+  --font-heading: var(--font-sans);
+  /* rótulos pequenos usam a mesma família do texto, em caixa alta */
+  --font-mono: var(--font-sans);
+
+  /* cantos secos, de pôster esportivo */
+  --radius-xl: 4px;
+  --radius-2xl: 6px;
 }
 
 html {
   background: var(--paper);
-  color-scheme: light;
+  color-scheme: dark;
 }
 
 body {
-  background: var(--paper);
+  /* luz de palco vindo do alto, como na foto do atleta */
+  background:
+    radial-gradient(80% 55% at 85% -15%, color-mix(in srgb, var(--navy) 70%, transparent), transparent 70%),
+    radial-gradient(50% 40% at 0% 115%, color-mix(in srgb, var(--navy) 35%, transparent), transparent 70%),
+    var(--paper);
+  background-attachment: fixed;
   color: var(--ink);
   font-family: var(--font-sans), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -66,6 +86,11 @@ body {
 ::selection {
   background: var(--accent);
   color: white;
+}
+
+/* selo de avisos do Next em desenvolvimento: não pode aparecer durante a apresentação (os erros seguem no console) */
+nextjs-portal {
+  display: none;
 }
 
 /* Lenis */
@@ -80,29 +105,66 @@ html.lenis body {
   overflow: hidden;
 }
 
-/* granulado de papel, sem imagem externa */
+/* granulado leve de foto, sem imagem externa */
 .grain::before {
   content: "";
   position: fixed;
   inset: -50%;
   z-index: 60;
   pointer-events: none;
-  opacity: 0.07;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* Anton só nos títulos de slide e da capa */
+.font-display {
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.font-heading {
+  font-weight: 600;
+  font-stretch: 88%;
+  letter-spacing: -0.012em;
+  text-wrap: pretty;
+}
+
+p {
+  text-wrap: pretty;
 }
 
 .num {
-  font-family: var(--font-serif), Georgia, serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-weight: 700;
+  font-stretch: 75%;
   font-variant-numeric: tabular-nums lining-nums;
-  font-variation-settings: "SOFT" 30, "opsz" 72;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.01em;
+}
+
+/* painel de destaque no azul da logo; text-paper vira texto claro aqui dentro */
+.painel {
+  --paper: var(--ink);
+  background: linear-gradient(160deg, color-mix(in srgb, var(--navy) 80%, var(--accent)), var(--navy) 70%);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, white 14%, transparent),
+    0 30px 60px -30px color-mix(in srgb, var(--navy) 90%, black);
+}
+
+/* número gigante vazado ao fundo de cada slide */
+.vazado {
+  font-family: var(--font-display), Impact, sans-serif;
+  font-weight: 400;
+  font-stretch: normal;
+  color: transparent;
+  -webkit-text-stroke: 1px color-mix(in srgb, var(--ink) 7%, transparent);
 }
 
 .hatch {
   background-image: repeating-linear-gradient(
     135deg,
     transparent 0 5px,
-    color-mix(in srgb, var(--ink) 14%, transparent) 5px 6px
+    color-mix(in srgb, var(--ink) 22%, transparent) 5px 6px
   );
 }
 
@@ -116,6 +178,33 @@ html.lenis body {
 }
 
 @media print {
+  /* papel branco: volta para tinta escura, com o azul da logo como destaque */
+  :root {
+    --paper: #ffffff;
+    --paper-2: #eef0f8;
+    --card: #ffffff;
+    --ink: #0a0f66;
+    --ink-2: #33385f;
+    --muted: #6b7091;
+    --line: #d5d8ea;
+    --accent: #2438d6;
+    --accent-soft: #dfe4ff;
+    --barra: #0a0f66;
+    --barra-2: #5a62a8;
+    --dado-soft: #e1e8fa;
+    --dado: #2f5bd3;
+    --calculo: #4f5258;
+    --calculo-soft: #e4e4e2;
+    --hipotese: #7d3bb0;
+    --hipotese-soft: #efe3f6;
+  }
+  body {
+    background: white;
+  }
+  .painel {
+    background: var(--paper-2);
+  }
+  .grain::before,
   .no-print {
     display: none !important;
   }

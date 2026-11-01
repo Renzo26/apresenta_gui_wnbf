@@ -47,7 +47,7 @@ export function ValorAluno(p: PropsSlide) {
 
           <div className="flex h-72 items-end gap-3 border-b border-ink/70 sm:gap-5 md:h-80">
             <Coluna rotulo="Rende (LTV)" valor={ltv}>
-              <motion.div className="w-full rounded-t-[4px] bg-ink" animate={{ height: h(ltv) }} transition={mola} />
+              <motion.div className="w-full rounded-t-[4px] bg-barra" animate={{ height: h(ltv) }} transition={mola} />
             </Coluna>
             <Coluna rotulo="Custa atender" valor={-custo}>
               <motion.div className="flex w-full flex-col justify-end" animate={{ height: h(ltv) }} transition={mola}>
@@ -85,8 +85,8 @@ export function ValorAluno(p: PropsSlide) {
                   data-bar
                   data-delay={i * 0.1}
                   title={`${pl.nome}: ${pl.vendas} alunos · ${reais(pl.preco)}`}
-                  className="flex items-center px-2 text-xs text-paper"
-                  style={{ width: `${pl.peso * 100}%`, background: ["var(--ink)", "var(--ink-2)", "var(--muted)"][i] }}
+                  className="flex items-center px-2 text-xs text-ink"
+                  style={{ width: `${pl.peso * 100}%`, background: ["var(--barra)", "var(--barra-2)", "var(--muted)"][i] }}
                 >
                   {pl.peso > 0.1 && pct(pl.peso)}
                 </div>
@@ -181,7 +181,7 @@ export function QuantoPagar(p: PropsSlide) {
         <div data-reveal className="grid gap-8 border-t border-line pt-10 lg:grid-cols-[1.4fr_1fr]">
           <div>
             <p className="mb-5 text-sm text-ink-2">A conta que liga o anúncio ao aluno</p>
-            <div className="flex flex-wrap items-center gap-3 font-serif text-2xl sm:gap-4 sm:text-3xl">
+            <div className="flex flex-wrap items-center gap-3 font-heading text-2xl sm:gap-4 sm:text-3xl">
               <Caixa rotulo="custo por contato" valor={reais(real.cpl)} />
               <span className="text-muted">÷</span>
               <Caixa rotulo="fechamento" valor={pct(real.fechamento)} />
@@ -192,7 +192,7 @@ export function QuantoPagar(p: PropsSlide) {
               <Selo tipo="hipotese" /> exemplo do cenário realista
             </p>
           </div>
-          <div className="flex flex-col gap-3 rounded-2xl bg-ink p-6 text-paper">
+          <div className="flex flex-col gap-3 rounded-2xl painel p-6 text-paper">
             <div className="flex items-center justify-between">
               <span className="font-mono text-xs uppercase tracking-[0.18em] text-paper/60">Alerta inicial</span>
               <Selo tipo="hipotese" />
@@ -244,7 +244,7 @@ export function Teto(p: PropsSlide) {
           titulo="Alunos ativos"
           selo="dado"
           partes={[
-            { v: P.alunosAtivos, r: `${P.alunosAtivos} hoje`, cls: "bg-ink text-paper" },
+            { v: P.alunosAtivos, r: `${P.alunosAtivos} hoje`, cls: "bg-barra text-ink" },
             { v: VAGAS_ATE_TETO, r: `${VAGAS_ATE_TETO} vagas`, cls: "hatch border border-ink/50 text-ink", selo: "calculo" },
           ]}
           total={P.teto}
@@ -254,8 +254,8 @@ export function Teto(p: PropsSlide) {
           titulo="Entradas novas por mês"
           selo="dado"
           partes={[
-            { v: P.entradasOrganicas, r: `${P.entradasOrganicas} orgânico`, cls: "bg-ink text-paper" },
-            { v: I.folgaEntradas, r: `${I.folgaEntradas} de folga para o tráfego`, cls: "bg-accent text-paper", selo: "calculo" },
+            { v: P.entradasOrganicas, r: `${P.entradasOrganicas} orgânico`, cls: "bg-barra text-ink" },
+            { v: I.folgaEntradas, r: `${I.folgaEntradas} de folga para o tráfego`, cls: "bg-accent text-white", selo: "calculo" },
           ]}
           total={P.capacidadeEntradas}
           rotuloTotal={`equipe atende ${P.capacidadeEntradas}`}
@@ -264,7 +264,7 @@ export function Teto(p: PropsSlide) {
         <div data-reveal className="grid items-stretch gap-3 border-t border-line pt-10 md:grid-cols-[1fr_auto_1fr]">
           <div className="rounded-2xl border border-line bg-card p-6">
             <span className="font-mono text-xs uppercase tracking-[0.18em] text-accent">1 · Subir</span>
-            <p className="mt-3 font-serif text-2xl leading-snug">Usar a folga de até {I.folgaEntradas} entradas por mês até lotar os {P.teto}.</p>
+            <p className="mt-3 font-heading text-2xl leading-snug">Usar a folga de até {I.folgaEntradas} entradas por mês até lotar os {P.teto}.</p>
           </div>
           <div className="hidden items-center text-3xl text-muted md:flex" aria-hidden>
             →
@@ -274,7 +274,7 @@ export function Teto(p: PropsSlide) {
               <span className="font-mono text-xs uppercase tracking-[0.18em] text-accent">2 · Manter</span>
               <Selo tipo="calculo" />
             </div>
-            <p className="mt-3 font-serif text-2xl leading-snug">
+            <p className="mt-3 font-heading text-2xl leading-snug">
               Com a base cheia, o tráfego só repõe quem sai: cerca de <span className="num">{numero(I.entradasManutencao)}</span> alunos extras por mês.
             </p>
           </div>

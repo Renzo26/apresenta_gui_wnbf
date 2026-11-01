@@ -39,7 +39,7 @@ export function Riscos(p: PropsSlide) {
             <span className="num pt-1 text-sm text-accent">{String(i + 1).padStart(2, "0")}</span>
             <div className="flex-1">
               <div className="flex items-start justify-between gap-3">
-                <h3 className="font-serif text-2xl leading-tight">{r.t}</h3>
+                <h3 className="font-heading text-2xl leading-tight">{r.t}</h3>
                 <Selo tipo={r.selo} />
               </div>
               <p className="mt-2 leading-relaxed text-ink-2">{r.d}</p>
@@ -47,7 +47,7 @@ export function Riscos(p: PropsSlide) {
           </div>
         ))}
       </div>
-      <p data-reveal className="mt-10 max-w-3xl font-serif text-2xl leading-snug">
+      <p data-reveal className="mt-10 max-w-3xl font-heading text-2xl leading-snug">
         Por isso mostramos faixas, e não um número. O plano de campo existe para estreitar essas faixas com dado real.
       </p>
     </Slide>
@@ -105,7 +105,7 @@ export function Checklist(p: PropsSlide) {
           ))}
         </ul>
 
-        <div data-reveal className="flex flex-col justify-between gap-8 rounded-2xl bg-ink p-8 text-paper">
+        <div data-reveal className="flex flex-col justify-between gap-8 rounded-2xl painel p-8 text-paper">
           <div>
             <p className="font-mono text-xs uppercase tracking-[0.18em] text-paper/60">Combinado</p>
             <p className="num mt-3 text-7xl">
@@ -113,7 +113,7 @@ export function Checklist(p: PropsSlide) {
               <span className="text-paper/40">/{PEDIDOS.length}</span>
             </p>
           </div>
-          <p className="font-serif text-2xl leading-snug">
+          <p className="font-heading text-2xl leading-snug">
             Com isso, a fase 0 começa. Em quatro semanas voltamos com os números reais e a planilha atualizada.
           </p>
         </div>

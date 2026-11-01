@@ -12,7 +12,7 @@ npm run build && npm start   # versão de produção
 
 ## Antes de apresentar
 
-- Preencha cliente, autor e data em `lib/capa.ts`.
+- Cliente e autor da capa ficam em `lib/capa.ts`.
 - Atalhos: `↓ →  espaço` próximo · `↑ ←` anterior · `N` notas do apresentador · `F` tela cheia · `?` ajuda.
 - A barra de controle some com o mouse parado; mexa o mouse para ela voltar.
 

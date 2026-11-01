@@ -27,18 +27,18 @@ export function Capa({ id }: PropsSlide) {
       <div className="relative flex flex-col justify-between gap-10">
         <div data-reveal className="flex items-center justify-between gap-4">
           {/* o arquivo do logo é quadrado com muita margem branca: o cartão recorta só a marca */}
-          <div className="relative aspect-[415/245] w-44 overflow-hidden rounded-2xl bg-white shadow-[0_12px_30px_-18px_rgba(27,26,23,0.45)] ring-1 ring-line md:w-56">
+          <div className="relative aspect-[415/245] w-44 overflow-hidden rounded-[4px] bg-white shadow-[0_18px_40px_-18px_rgba(0,0,0,0.8)] md:w-56">
             <Image src={logo} alt={CAPA.cliente} fill priority sizes="224px" className="object-cover object-[50%_45%]" />
           </div>
-          <span className="font-mono text-xs uppercase tracking-[0.18em] text-muted lg:hidden">{CAPA.data}</span>
         </div>
 
         <div>
-          <p data-reveal className="mb-6 font-mono text-xs uppercase tracking-[0.2em] text-accent">
+          <p data-reveal className="mb-6 flex items-center gap-3 font-mono text-xs font-semibold uppercase tracking-[0.24em] text-accent">
+            <span className="h-[3px] w-10 -skew-x-[20deg] bg-accent" />
             Tráfego pago · primeira campanha
           </p>
-          <h1 data-reveal className="max-w-[16ch] font-serif text-[2.9rem] leading-[0.98] tracking-[-0.03em] [font-variation-settings:'SOFT'_60] sm:text-7xl lg:text-[5.4rem] xl:text-[6.2rem]">
-            Projeção e plano de validação do tráfego pago
+          <h1 data-reveal className="max-w-[14ch] font-display text-[3.2rem] leading-[1.06] sm:text-[4.8rem] lg:text-[5.6rem] xl:text-[6.4rem]">
+            Projeção e plano de validação do <span className="text-accent">tráfego pago</span>
           </h1>
         </div>
 
@@ -52,28 +52,32 @@ export function Capa({ id }: PropsSlide) {
               <Selo tipo="calculo" />
               <Selo tipo="hipotese" />
             </div>
-            <span className="font-mono text-xs uppercase tracking-[0.18em] text-muted">{CAPA.autor}</span>
+            <span className="font-mono text-xs font-semibold uppercase tracking-[0.22em] text-muted">{CAPA.autor}</span>
           </div>
         </div>
       </div>
 
       <div className="relative flex flex-col gap-4 lg:justify-center">
-        <span className="hidden text-right font-mono text-xs uppercase tracking-[0.18em] text-muted lg:block">{CAPA.data}</span>
-        <figure
-          data-reveal
-          className="relative mx-auto aspect-[792/1080] w-full max-w-[420px] overflow-hidden rounded-[28px] bg-ink shadow-[0_40px_80px_-30px_rgba(27,26,23,0.55)] lg:max-w-none"
-        >
-          {/* a imagem original já tem cantos arredondados; o leve zoom esconde a borda clara */}
-          <Image
-            src={atleta}
-            alt={`Atleta do ${CAPA.cliente} com medalha da WNBF`}
-            fill
-            priority
-            placeholder="blur"
-            sizes="(min-width: 1024px) 34vw, (min-width: 640px) 420px, 92vw"
-            className="scale-[1.045] object-cover"
-          />
-        </figure>
+        <div className="relative mx-auto w-full max-w-[420px] lg:max-w-none">
+          {/* faixa inclinada atrás da foto, no azul da marca */}
+          <span aria-hidden className="absolute -inset-y-6 left-[12%] right-[-30%] -skew-x-[12deg] bg-navy" />
+          <span aria-hidden className="absolute -inset-y-6 left-[6%] w-2 -skew-x-[12deg] bg-accent" />
+          <figure
+            data-reveal
+            className="relative aspect-[792/1080] w-full overflow-hidden rounded-[6px] bg-paper shadow-[0_40px_90px_-30px_rgba(0,0,0,0.9)]"
+          >
+            {/* a imagem original tem cantos arredondados e borda clara; o zoom esconde os dois */}
+            <Image
+              src={atleta}
+              alt={`Atleta do ${CAPA.cliente} com medalha da WNBF`}
+              fill
+              priority
+              placeholder="blur"
+              sizes="(min-width: 1024px) 34vw, (min-width: 640px) 420px, 92vw"
+              className="scale-[1.08] object-cover"
+            />
+          </figure>
+        </div>
       </div>
     </section>
   );
@@ -92,7 +96,7 @@ export function ComoLer(p: PropsSlide) {
         {(Object.keys(SELOS) as TipoSelo[]).map((t) => (
           <div key={t} data-reveal className="flex flex-col gap-6 rounded-2xl border border-line bg-card p-6" style={{ borderTop: `4px solid ${SELOS[t].cor}` }}>
             <Selo tipo={t} grande />
-            <p className="font-serif text-2xl leading-tight">{SELOS[t].texto}</p>
+            <p className="font-heading text-2xl leading-tight">{SELOS[t].texto}</p>
             <div className="mt-auto border-t border-line pt-4">
               <p className="num text-3xl" style={{ color: SELOS[t].cor }}>
                 {EXEMPLOS[t].valor}
@@ -128,13 +132,13 @@ export function Hoje(p: PropsSlide) {
             <Selo tipo="dado" />
           </figcaption>
           <div className="relative flex h-64 items-end gap-3 border-b border-ink/70 sm:gap-6 md:h-72">
-            <div className="pointer-events-none absolute inset-x-0 z-10 border-t-2 border-dashed border-accent" style={{ bottom: `${(P.entradasOrganicas / max) * 100}%` }}>
-              <span className="absolute -top-7 left-0 rounded-full bg-accent px-2 py-0.5 font-mono text-[11px] text-paper">média {P.entradasOrganicas}</span>
+            <div className="pointer-events-none absolute inset-x-0 z-10 border-t-2 border-dashed border-ink" style={{ bottom: `${(P.entradasOrganicas / max) * 100}%` }}>
+              <span className="absolute -top-7 left-0 rounded-[3px] bg-ink px-2 py-0.5 font-mono text-[11px] font-semibold text-paper">média {P.entradasOrganicas}</span>
             </div>
             {CLIENTE.entradasMeses.map((m, i) => (
               <div key={m.mes} className="group relative flex h-full flex-1 flex-col justify-end">
                 <span className="num mb-2 text-center text-lg">{m.v}</span>
-                <div data-bar="y" data-delay={i * 0.08} className="rounded-t-[4px] bg-ink transition-colors group-hover:bg-ink-2" style={{ height: `${(m.v / max) * 100}%` }} />
+                <div data-bar="y" data-delay={i * 0.08} className="rounded-t-[4px] bg-gradient-to-t from-navy to-accent transition-[filter] group-hover:brightness-125" style={{ height: `${(m.v / max) * 100}%` }} />
               </div>
             ))}
           </div>
@@ -186,8 +190,8 @@ export function Diagnostico(p: PropsSlide) {
           </div>
           <div className="flex items-center gap-4">
             <div className="flex h-12 gap-[2px]" style={{ width: largura(P.entradasOrganicas + CLIENTE.renovacoesMes) }}>
-              <div data-bar className="flex flex-1 items-center rounded-l-[4px] bg-ink px-3 text-sm text-paper">{P.entradasOrganicas} novas</div>
-              <div data-bar data-delay="0.15" className="flex flex-1 items-center rounded-r-[4px] bg-ink-2 px-3 text-sm text-paper">
+              <div data-bar className="flex flex-1 items-center rounded-l-[4px] bg-barra px-3 text-sm text-ink">{P.entradasOrganicas} novas</div>
+              <div data-bar data-delay="0.15" className="flex flex-1 items-center rounded-r-[4px] bg-barra-2 px-3 text-sm text-ink">
                 {CLIENTE.renovacoesMes} renovações
               </div>
             </div>
@@ -197,7 +201,7 @@ export function Diagnostico(p: PropsSlide) {
         </div>
 
         <div data-reveal className="grid gap-6 border-t border-line pt-8 md:grid-cols-2">
-          <p className="font-serif text-2xl leading-snug">
+          <p className="font-heading text-2xl leading-snug">
             Entra praticamente o mesmo que sai. O orgânico <span className="text-accent">segura</span> a base, mas não a leva para cima.
           </p>
           <div className="flex flex-col gap-2 text-sm text-ink-2">

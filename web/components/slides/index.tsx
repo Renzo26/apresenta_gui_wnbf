@@ -1,10 +1,10 @@
 import type { ComponentType } from "react";
 import { Capa, ComoLer, Diagnostico, Hoje } from "./abertura";
 import { QuantoPagar, Teto, ValorAluno } from "./valor";
-import { Cenarios, Evolucao, ListaEspera, PorVerba } from "./cenarios";
+import { Cenarios, Evolucao, ListaEspera, PorVerba, TabelaProjecao } from "./cenarios";
 import { Decidir, Fases, Rastreamento, SabemosNaoSabemos } from "./campo";
 import { Checklist, Riscos } from "./fechamento";
-import { BLACK, CENARIOS, CLIENTE, ENTRADAS_PARA_MANTER, ESPERA, EVOLUCAO, I, META_CAC, P, VAGAS_ATE_TETO, VERBAS, mil, numero, reais } from "@/lib/modelo";
+import { BLACK, CENARIOS, CLIENTE, ENTRADAS_PARA_MANTER, ESPERA, EVOLUCAO, I, MEDIA_POR_VERBA, META_CAC, P, VAGAS_ATE_TETO, VERBAS, mil, numero, reais } from "@/lib/modelo";
 import type { PropsSlide } from "./tipos";
 
 type DefSlide = { id: string; curto: string; notas: string[]; Conteudo: ComponentType<PropsSlide> };
@@ -94,7 +94,19 @@ export const SLIDES: DefSlide[] = [
     Conteudo: PorVerba,
     notas: [
       "Cada célula mostra quantos alunos a verba traria por mês e quanto esses alunos deixam ao longo dos 6 meses, já pagando o atendimento e o anúncio.",
+      `A última coluna é a média dos três cenários: cerca de ${MEDIA_POR_VERBA.map((m) => `${numero(m.media)} alunos por mês com ${mil(m.verba, 0)}`).join(", ")}. É uma média de hipóteses, com o mesmo peso para cada cenário: serve de ordem de grandeza, não de promessa.`,
       `Ponto principal: nas células hachuradas a equipe já está no limite de ${I.folgaEntradas} entradas extras. Colocar mais verba ali não traz mais aluno, só aumenta o custo. No realista com ${mil(VERBAS[2], 0)}, por exemplo, o ganho é menor do que com ${mil(VERBAS[1], 0)}.`,
+    ],
+  },
+  {
+    id: "tabela-projecao",
+    curto: "Tabela da projeção",
+    Conteudo: TabelaProjecao,
+    notas: [
+      "Esta é a mesma conta em forma de tabela: quanto investimos, quanto custa cada contato, quantos contatos vêm, quantos viram aluno e quanto sai cada aluno.",
+      `Exemplo no realista com ${mil(VERBAS[1], 0)}: contatos a ${reais(real.cpl)} e conversão de ${numero(real.fechamento * 100)}% dão um custo por aluno de ${reais(real.cac)}, ou cerca de ${numero(VERBAS[1] / real.cac)} alunos por mês.`,
+      `As duas colunas de alunos mostram o que a verba traria e o que entra de fato: a equipe atende ${I.folgaEntradas} entradas extras por mês. Com ${mil(VERBAS[2], 0)} no otimista, por exemplo, a verba traria ${numero(otim.fechamento * VERBAS[2] / otim.cpl)} alunos, mas só ${I.folgaEntradas} entram.`,
+      "Reforçar que custo por contato e conversão são hipóteses: é isso que as primeiras semanas de campanha vão confirmar.",
     ],
   },
   {

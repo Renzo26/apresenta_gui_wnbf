@@ -1,21 +1,18 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Instrument_Sans, JetBrains_Mono } from "next/font/google";
+import { Anton, Archivo } from "next/font/google";
 import "./globals.css";
 
-const serif = Fraunces({
-  variable: "--font-serif",
+// Anton: o mesmo peso condensado do "DLM TEAM" no pôster do atleta.
+const display = Anton({
+  variable: "--font-display",
   subsets: ["latin"],
-  axes: ["SOFT", "opsz"],
+  weight: "400",
 });
 
-const sans = Instrument_Sans({
+const sans = Archivo({
   variable: "--font-sans",
   subsets: ["latin"],
-});
-
-const mono = JetBrains_Mono({
-  variable: "--font-mono",
-  subsets: ["latin"],
+  axes: ["wdth"],
 });
 
 export const metadata: Metadata = {
@@ -33,12 +30,12 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f5f2ec",
+  themeColor: "#060920",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="pt-BR" className={`${serif.variable} ${sans.variable} ${mono.variable} antialiased`}>
+    <html lang="pt-BR" className={`${display.variable} ${sans.variable} antialiased`}>
       <body className="grain">{children}</body>
     </html>
   );

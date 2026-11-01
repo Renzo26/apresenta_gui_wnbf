@@ -1,6 +1,5 @@
-// Preencha antes de apresentar.
+// Dados da capa.
 export const CAPA = {
   cliente: "De Lamadrid Team",
-  autor: "[SEU NOME / AGÊNCIA]",
-  data: "[DATA]",
+  autor: "Guilherme Wiegner",
 };

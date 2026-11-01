@@ -73,6 +73,19 @@ export function simular(cac: number, verbaMax = ESPERA.verbaNormalMax, meses = 1
 
 export const EVOLUCAO = CENARIOS.map((c) => ({ ...c, ...simular(c.cac) }));
 
+/** Média simples dos três cenários em cada faixa de verba: com o teto de entradas (`media`) e sem ele (`mediaPotencial`). */
+export const MEDIA_POR_VERBA = VERBAS.map((verba) => {
+  const linhas = PROJECAO.filter((x) => x.verba === verba);
+  const alunos = linhas.map((x) => x.alunos);
+  return {
+    verba,
+    media: alunos.reduce((s, a) => s + a, 0) / alunos.length,
+    mediaPotencial: linhas.reduce((s, x) => s + x.alunosPotencial, 0) / linhas.length,
+    min: Math.min(...alunos),
+    max: Math.max(...alunos),
+  };
+});
+
 /* ---------- formatação pt-BR ---------- */
 
 const fmt = (n: number, casas = 0) =>

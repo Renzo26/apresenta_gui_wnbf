@@ -44,7 +44,7 @@ export function SabemosNaoSabemos(p: PropsSlide) {
         {(Object.keys(SABER) as TipoSelo[]).map((t) => (
           <div key={t} data-reveal className="flex flex-col gap-5 rounded-2xl p-6" style={{ background: SELOS[t].fundo }}>
             <div className="flex items-center justify-between">
-              <h3 className="font-serif text-2xl" style={{ color: SELOS[t].cor }}>
+              <h3 className="font-heading text-2xl" style={{ color: SELOS[t].cor }}>
                 {SABER[t].titulo}
               </h3>
               <Selo tipo={t} />
@@ -59,7 +59,7 @@ export function SabemosNaoSabemos(p: PropsSlide) {
           </div>
         ))}
       </div>
-      <p data-reveal className="mt-10 max-w-3xl font-serif text-2xl leading-snug">
+      <p data-reveal className="mt-10 max-w-3xl font-heading text-2xl leading-snug">
         A maior incerteza é uma só: <span className="text-hipotese">o fechamento do tráfego</span> comparado ao do orgânico. É a primeira coisa que vamos medir.
       </p>
     </Slide>
@@ -84,7 +84,7 @@ export function Rastreamento(p: PropsSlide) {
               <motion.span
                 whileHover={{ scale: 1.08 }}
                 className={`num z-10 grid h-11 w-11 shrink-0 place-items-center rounded-full border text-sm ${
-                  i === FLUXO.length - 1 ? "border-accent bg-accent text-paper" : "border-ink bg-paper"
+                  i === FLUXO.length - 1 ? "border-accent bg-accent text-white" : "border-ink bg-paper"
                 }`}
               >
                 {i + 1}
@@ -97,7 +97,7 @@ export function Rastreamento(p: PropsSlide) {
               )}
             </div>
             <div className="ml-4 pb-6 md:ml-0 md:mt-5 md:pr-5">
-              <h3 className="font-serif text-2xl leading-tight">{f.t}</h3>
+              <h3 className="font-heading text-2xl leading-tight">{f.t}</h3>
               <p className="mt-2 text-sm leading-snug text-ink-2">{f.d}</p>
               {f.mede && (
                 <p className="mt-3 inline-block rounded-full bg-ink px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-paper">mede: {f.mede}</p>
@@ -112,11 +112,11 @@ export function Rastreamento(p: PropsSlide) {
           <span className="w-fit rounded-full border border-accent px-3 py-1 font-mono text-xs uppercase tracking-wider text-accent">Decisão pendente</span>
         </div>
         <div className="rounded-2xl border border-line bg-card p-5">
-          <p className="font-serif text-xl">Ferramenta pronta de rastreamento</p>
+          <p className="font-heading text-xl">Ferramenta pronta de rastreamento</p>
           <p className="mt-1 text-sm text-ink-2">Como o Tintim. Falta confirmar se funciona com o WhatsApp Business comum, que é o usado hoje.</p>
         </div>
         <div className="rounded-2xl border border-line bg-card p-5">
-          <p className="font-serif text-xl">Solução própria</p>
+          <p className="font-heading text-xl">Solução própria</p>
           <p className="mt-1 text-sm text-ink-2">Com a API oficial do WhatsApp. Mais controle, mais trabalho de implantação.</p>
         </div>
       </div>
@@ -142,23 +142,23 @@ export function Fases(p: PropsSlide) {
             <li key={f.f} data-reveal className="flex gap-5 md:flex-col">
               <span
                 className={`num z-10 grid h-11 w-11 shrink-0 place-items-center rounded-full text-sm ${
-                  i === 1 || i === 2 ? "bg-accent text-paper" : "border border-ink bg-paper"
+                  i === 1 || i === 2 ? "bg-accent text-white" : "border border-ink bg-paper"
                 }`}
               >
                 {i}
               </span>
               <div>
                 <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted">{f.q}</p>
-                <h3 className="mt-1 font-serif text-2xl">{f.t}</h3>
+                <h3 className="mt-1 font-heading text-2xl">{f.t}</h3>
                 <p className="mt-2 text-sm leading-snug text-ink-2">{f.d}</p>
               </div>
             </li>
           ))}
         </ol>
       </div>
-      <div data-reveal className="mt-12 grid gap-6 rounded-2xl bg-ink p-6 text-paper md:grid-cols-[auto_1fr] md:items-center md:p-8">
+      <div data-reveal className="mt-12 grid gap-6 rounded-2xl painel p-6 text-paper md:grid-cols-[auto_1fr] md:items-center md:p-8">
         <span className="font-mono text-xs uppercase tracking-[0.18em] text-paper/60">Em 4 semanas</span>
-        <p className="font-serif text-2xl leading-snug md:text-3xl">
+        <p className="font-heading text-2xl leading-snug md:text-3xl">
           trocamos as hipóteses de custo por contato e fechamento por números reais, e sabemos se estamos perto do conservador, do realista ou do otimista.
         </p>
       </div>
@@ -228,7 +228,7 @@ export function Decidir(p: PropsSlide) {
               <Luz cor={s.cor} tamanho={22} />
               <div className="flex-1">
                 <p className="num text-sm text-ink-2">{s.faixa}</p>
-                <p className="font-serif text-2xl leading-tight">{s.acao}</p>
+                <p className="font-heading text-2xl leading-tight">{s.acao}</p>
                 <p className="text-sm text-ink-2">{s.d}</p>
               </div>
             </motion.div>

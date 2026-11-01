@@ -166,7 +166,7 @@ export function Deck() {
   return (
     <div ref={raiz}>
       <div className="no-print fixed inset-x-0 top-0 z-50 h-[3px] bg-transparent">
-        <div data-progresso className="h-full origin-left scale-x-0 bg-accent" />
+        <div data-progresso className="h-full origin-left scale-x-0 bg-gradient-to-r from-navy to-accent" />
       </div>
 
       <main>
@@ -202,7 +202,7 @@ export function Deck() {
         animate={{ opacity: barraVisivel ? 1 : 0, y: barraVisivel ? 0 : 12 }}
         transition={{ duration: 0.35, ease: "easeOut" }}
         style={{ pointerEvents: barraVisivel ? "auto" : "none" }}
-        className="no-print fixed bottom-4 left-4 z-40 flex items-center gap-1 rounded-full border border-line bg-card/85 p-1 shadow-[0_8px_30px_-12px_rgba(27,26,23,0.25)] backdrop-blur md:bottom-6 md:left-6">
+        className="no-print fixed bottom-4 left-4 z-40 flex items-center gap-1 rounded-[6px] border border-line bg-card/85 p-1 shadow-[0_8px_30px_-12px_rgba(0,0,0,0.7)] backdrop-blur md:bottom-6 md:left-6">
         <BotaoBarra onClick={() => irPara(atual - 1)} rotulo="Slide anterior">
           ↑
         </BotaoBarra>
@@ -271,7 +271,7 @@ export function Deck() {
               className="w-full max-w-sm rounded-2xl bg-card p-6 text-sm text-ink-2 shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
-              <p className="mb-4 font-serif text-2xl text-ink">Atalhos</p>
+              <p className="mb-4 font-heading text-2xl text-ink">Atalhos</p>
               <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2">
                 {[
                   ["↓ → espaço", "próximo slide"],
