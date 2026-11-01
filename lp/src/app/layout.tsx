@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Anton, Instrument_Serif, Manrope } from "next/font/google";
-import { SmoothScroll } from "@/components/smooth-scroll";
 import { CONTACT, PERFIL } from "@/lib/content";
 import "./globals.css";
 
@@ -80,7 +79,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="pt-BR" className={`${anton.variable} ${instrument.variable} ${manrope.variable}`}>
       <body>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-        <SmoothScroll>{children}</SmoothScroll>
+        {children}
       </body>
     </html>
   );

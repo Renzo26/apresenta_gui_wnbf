@@ -33,6 +33,7 @@ const nextConfig: NextConfig = {
     return [
       { source: "/links", destination: "/", permanent: false },
       { source: "/links-2", destination: "/", permanent: false },
+      { source: "/black", destination: "/black-friday", permanent: false },
     ];
   },
 };

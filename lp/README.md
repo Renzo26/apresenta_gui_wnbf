@@ -6,6 +6,8 @@ Um único app serve as duas páginas:
 
 - `/`: a LP completa.
 - `/linktree`: a página de links para a bio do Instagram (`seu-dominio.com.br/linktree`).
+- `/black-friday` (ou `/black`): oferta de Black Friday da consultoria. Valores, bônus e FAQ em `src/lib/black-friday.ts`.
+- `/llms.txt`: resumo do site e da oferta para buscadores com IA.
 
 Os endereços antigos `/links` e `/links-2` redirecionam para a LP.
 Next.js 16, React 19, Tailwind CSS 4, GSAP (ScrollTrigger + SplitText), Motion e Lenis.
