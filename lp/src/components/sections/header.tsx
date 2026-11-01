@@ -16,7 +16,7 @@ const LINKS = [
 
 export function Logo({ className }: { className?: string }) {
   return (
-    <a href="#inicio" aria-label="De Lamadrid Team — início" className={cn("flex items-center gap-2.5", className)}>
+    <a href="#inicio" aria-label="DLM De Lamadrid Team — início" className={cn("flex items-center gap-2.5", className)}>
       <span className="font-display text-3xl leading-none tracking-wide">DLM</span>
       <span className="hidden text-[0.6rem] font-bold uppercase leading-tight tracking-[0.25em] opacity-70 sm:block">
         De Lamadrid

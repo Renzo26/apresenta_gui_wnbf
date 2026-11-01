@@ -6,7 +6,7 @@ Um único app serve as duas páginas:
 
 - `/`: a LP completa.
 - `/linktree`: a página de links para a bio do Instagram (`seu-dominio.com.br/linktree`).
-- `/black-friday` (ou `/black`): oferta de Black Friday da consultoria. Valores, bônus e FAQ em `src/lib/black-friday.ts`.
+- `/black-friday` (ou `/black`): oferta de Black Friday da consultoria, com as mesmas seções e animações da LP (`src/components/black-friday/`). Valores, bônus e FAQ em `src/lib/black-friday.ts`.
 - `/llms.txt`: resumo do site e da oferta para buscadores com IA.
 
 Os endereços antigos `/links` e `/links-2` redirecionam para a LP.

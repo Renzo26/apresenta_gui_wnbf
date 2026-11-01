@@ -20,6 +20,7 @@
   --color-carvao: #0b0b0a;
   --color-grafite: #1b1b1a;
   --color-ouro: #f0c541;
+  --color-ouro-deep: #8a6a12;
 
   --font-display: var(--font-anton), "Arial Narrow", sans-serif;
   --font-serif: var(--font-instrument), Georgia, serif;
@@ -103,61 +104,5 @@ html.lenis body {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
-  }
-}
-
-/* ---------- Black Friday: animações só em CSS (sem JS na página) ---------- */
-@keyframes bf-faixa {
-  to {
-    transform: translateX(-50%);
-  }
-}
-.bf-faixa {
-  animation: bf-faixa 30s linear infinite;
-}
-@keyframes bf-pulso {
-  0%,
-  100% {
-    transform: scale(1) rotate(-8deg);
-  }
-  50% {
-    transform: scale(1.06) rotate(-8deg);
-  }
-}
-.bf-selo {
-  animation: bf-pulso 2.6s ease-in-out infinite;
-}
-@keyframes bf-brilho {
-  0%,
-  70% {
-    transform: translateX(-120%) skewX(-12deg);
-  }
-  100% {
-    transform: translateX(320%) skewX(-12deg);
-  }
-}
-.bf-brilho {
-  animation: bf-brilho 3.6s ease-in-out infinite;
-}
-/* revela ao rolar, só onde o navegador suporta scroll-driven animations */
-@supports (animation-timeline: view()) {
-  @keyframes bf-sobe {
-    from {
-      opacity: 0;
-      transform: translateY(40px);
-    }
-  }
-  .bf-revela {
-    animation: bf-sobe linear both;
-    animation-timeline: view();
-    animation-range: entry 0% entry 55%;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .bf-faixa,
-  .bf-selo,
-  .bf-brilho,
-  .bf-revela {
-    animation: none;
   }
 }

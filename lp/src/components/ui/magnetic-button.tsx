@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 type Props = {
   href: string;
   children: ReactNode;
-  variant?: "indigo" | "light" | "outline" | "outline-light" | "bronze";
+  variant?: "indigo" | "light" | "outline" | "outline-light" | "bronze" | "ouro" | "carvao";
   className?: string;
   external?: boolean;
   icon?: boolean;
@@ -20,6 +20,9 @@ const variants = {
   light: "bg-bone text-night",
   outline: "border border-night/30 text-night hover:text-bone",
   "outline-light": "border border-bone/35 text-bone hover:text-night",
+  // Black Friday
+  ouro: "bg-ouro text-carvao",
+  carvao: "bg-carvao text-ouro hover:text-carvao",
 };
 
 const fills = {
@@ -28,6 +31,8 @@ const fills = {
   light: "bg-indigo-soft",
   outline: "bg-night",
   "outline-light": "bg-bone",
+  ouro: "bg-bone",
+  carvao: "bg-ouro",
 };
 
 // o preenchimento claro troca a cor do texto no hover
@@ -37,6 +42,8 @@ const hoverText = {
   light: "",
   outline: "",
   "outline-light": "",
+  ouro: "",
+  carvao: "",
 };
 
 /** Botão em pílula que "puxa" levemente em direção ao cursor. */

@@ -5,11 +5,20 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useRef } from "react";
 import { MARQUEE } from "@/lib/content";
+import { cn } from "@/lib/utils";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-/** Faixa infinita; acelera e inverte conforme o scroll. */
-export function Marquee() {
+/** Faixa infinita; acelera e inverte conforme o scroll. Textos e cores mudam por página (ex.: Black Friday). */
+export function Marquee({
+  itens = MARQUEE,
+  className = "bg-indigo text-bone",
+  simboloCls = "text-bronze",
+}: {
+  itens?: string[];
+  className?: string;
+  simboloCls?: string;
+}) {
   const ref = useRef<HTMLDivElement>(null);
 
   useGSAP(
@@ -37,15 +46,15 @@ export function Marquee() {
     { scope: ref },
   );
 
-  const row = [...MARQUEE, ...MARQUEE];
+  const row = [...itens, ...itens];
 
   return (
-    <div ref={ref} aria-hidden className="-mx-6 -rotate-[1.5deg] overflow-hidden bg-indigo py-5 text-bone sm:py-6">
+    <div ref={ref} aria-hidden className={cn("-mx-6 -rotate-[1.5deg] overflow-hidden py-5 sm:py-6", className)}>
       <div className="marquee-track flex w-max">
         {row.map((w, i) => (
           <span key={i} className="flex items-center font-display text-3xl uppercase sm:text-5xl">
             <span className="px-6 sm:px-10">{w}</span>
-            <span className="text-2xl text-bronze sm:text-4xl">✦</span>
+            <span className={cn("text-2xl sm:text-4xl", simboloCls)}>✦</span>
           </span>
         ))}
       </div>
