@@ -12,7 +12,7 @@ import {
   validar,
   type Campos,
 } from "@/lib/lead";
-import { origem, refCampanha } from "@/lib/rastreio";
+import { eventoPersonalizado, origem, refCampanha } from "@/lib/rastreio";
 import { cn } from "@/lib/utils";
 
 const GUARDADO = "dlm-lead"; // só preenche o formulário de novo para quem já respondeu, neste navegador
@@ -40,7 +40,13 @@ export function BfLeadForm() {
         const salvo = localStorage.getItem(GUARDADO);
         if (salvo) setCampos((c) => (c.nome ? c : { ...VAZIO, ...JSON.parse(salvo) }));
       } catch {}
-      setDestino({ href: a.href, origem: a.textContent?.trim().replace(/\s+/g, " ") || "WhatsApp" });
+      const botao = a.textContent?.trim().replace(/\s+/g, " ") || "WhatsApp";
+      eventoPersonalizado("AbrirFormulario", {
+        botao: botao.slice(0, 80),
+        content_name: planoDoLink(a.href) ?? "Consultoria",
+        campanha: origem().utm_campaign,
+      });
+      setDestino({ href: a.href, origem: botao });
     };
     document.addEventListener("click", onClick, true);
     return () => document.removeEventListener("click", onClick, true);

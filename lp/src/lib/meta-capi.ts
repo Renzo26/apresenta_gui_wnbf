@@ -1,4 +1,4 @@
-// API de Conversões da Meta: envia o Lead também pelo servidor.
+// API de Conversões da Meta: envia FormularioEnviado e Lead também pelo servidor.
 // O navegador manda o mesmo evento pelo Pixel com o mesmo event_id, e a Meta conta uma vez só.
 // Sem META_CAPI_TOKEN não faz nada. O token fica só nas variáveis do Easypanel, nunca no código.
 import { createHash } from "node:crypto";
@@ -38,17 +38,18 @@ export async function enviarLeadMeta(l: LeadMeta) {
     fbc: l.fbc ?? undefined,
   };
 
+  // os mesmos dois eventos que o navegador envia, com os mesmos ids (ver lib/lead)
+  const base = {
+    event_time: Math.floor(Date.now() / 1000),
+    action_source: "website",
+    event_source_url: l.url ?? undefined,
+    user_data,
+    custom_data: { content_name: l.plano ?? "Consultoria", content_category: "Black Friday", campanha: l.campanha ?? undefined },
+  };
   const corpo = {
     data: [
-      {
-        event_name: "Lead",
-        event_time: Math.floor(Date.now() / 1000),
-        event_id: l.eventId,
-        action_source: "website",
-        event_source_url: l.url ?? undefined,
-        user_data,
-        custom_data: { content_name: l.plano ?? "Consultoria", campanha: l.campanha ?? undefined },
-      },
+      { ...base, event_name: "FormularioEnviado", event_id: `${l.eventId}-form` },
+      { ...base, event_name: "Lead", event_id: l.eventId },
     ],
     // código da aba "Testar eventos" do Gerenciador de Eventos (só durante o teste)
     test_event_code: process.env.META_TEST_EVENT_CODE || undefined,

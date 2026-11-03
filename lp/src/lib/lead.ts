@@ -1,7 +1,7 @@
 // Captura de lead antes do WhatsApp (página da Black Friday).
 // Os dados vão para POST /api/leads, que grava em paginas.leads (tabela criada pelo Alembic em db/)
 // e envia o Lead à Meta pela API de Conversões.
-import { comRef, evento, idsMeta, novoEventId } from "@/lib/rastreio";
+import { comRef, evento, eventoPersonalizado, idsMeta, novoEventId } from "@/lib/rastreio";
 
 export type Lead = {
   nome: string;
@@ -63,7 +63,8 @@ export function linkComNome(href: string, nome: string, ref?: string) {
  * garante que o envio termina mesmo se a pessoa sair da página.
  */
 export function registrarLead(lead: Lead) {
-  // mesmo id no Pixel e na API de Conversões: a Meta junta os dois e conta um Lead só
+  // mesmo id no Pixel e na API de Conversões: a Meta junta os dois e conta cada evento uma vez só.
+  // O envio do formulário gera dois eventos: FormularioEnviado (personalizado) e Lead (padrão).
   const eventId = novoEventId();
   fetch("/api/leads", {
     method: "POST",
@@ -74,5 +75,7 @@ export function registrarLead(lead: Lead) {
 
   const w = window as Window & { dataLayer?: unknown[] };
   w.dataLayer?.push({ event: "generate_lead", plano: lead.plano, origem: lead.origem, campanha: lead.utms.utm_campaign });
-  evento("Lead", { content_name: lead.plano ?? "Consultoria", content_category: "Black Friday" }, eventId);
+  const dados = { content_name: lead.plano ?? "Consultoria", content_category: "Black Friday", campanha: lead.utms.utm_campaign };
+  eventoPersonalizado("FormularioEnviado", dados, `${eventId}-form`);
+  evento("Lead", dados, eventId);
 }

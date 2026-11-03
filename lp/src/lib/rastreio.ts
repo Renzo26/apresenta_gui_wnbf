@@ -83,6 +83,11 @@ export function evento(nome: string, dados?: Record<string, unknown>, eventId?: 
   fbq()?.("track", nome, dados ?? {}, eventId ? { eventID: eventId } : undefined);
 }
 
+/** Evento personalizado do Pixel (nome criado por nós, ex.: AbrirFormulario). */
+export function eventoPersonalizado(nome: string, dados?: Record<string, unknown>, eventId?: string) {
+  fbq()?.("trackCustom", nome, dados ?? {}, eventId ? { eventID: eventId } : undefined);
+}
+
 export function pageView() {
   fbq()?.("track", "PageView");
 }
