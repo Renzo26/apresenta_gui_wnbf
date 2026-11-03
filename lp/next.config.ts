@@ -28,6 +28,12 @@ const nextConfig: NextConfig = {
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },
+  // black.delamadridteam.com abre direto na página da Black (a URL continua na raiz)
+  async rewrites() {
+    return {
+      beforeFiles: [{ source: "/", has: [{ type: "host", value: "black\\..*" }], destination: "/black-friday" }],
+    };
+  },
   // links antigos da bio (/links, /links-2) caem na LP, mantendo os UTMs
   async redirects() {
     return [
