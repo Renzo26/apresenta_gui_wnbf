@@ -8,6 +8,13 @@ const LIMITE_BYTES = 8_000;
 const MAX_POR_IP = 5;
 const JANELA_MS = 10 * 60 * 1000;
 const UTMS = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"] as const;
+const PLANOS = ["Anual", "Semestral", "Trimestral"];
+
+/** Qual botão levou ao WhatsApp: o plano do botão ou, nos botões gerais, "Entrar em contato". */
+function botaoDoLead(plano: string | null) {
+  const p = PLANOS.find((n) => n.toLowerCase() === plano?.toLowerCase());
+  return p ? `Plano ${p}` : "Entrar em contato";
+}
 
 // limite simples em memória (um container só); protege o banco de spam
 const envios = new Map<string, number[]>();
@@ -57,6 +64,7 @@ export async function POST(req: Request) {
     pagina: texto(corpo.pagina, 200) ?? "/",
     origem: texto(corpo.origem, 200),
     plano: texto(corpo.plano, 50),
+    botao: botaoDoLead(texto(corpo.plano, 50)),
     ...Object.fromEntries(UTMS.map((u) => [u, parametros[u] ?? null])),
     parametros: sql.json(parametros),
     referrer: texto(corpo.referrer, 500),
