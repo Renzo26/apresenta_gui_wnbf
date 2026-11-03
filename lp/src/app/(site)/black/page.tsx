@@ -16,7 +16,7 @@ import { PERFIL } from "@/lib/content";
 import { BONUS_BF, DESCONTO_BF, FAQ_BF, PARCELAS_BF, PLANOS_BF, RESUMO_BF, reais } from "@/lib/black-friday";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-const url = `${siteUrl}/black-friday`;
+const url = `${siteUrl}/black`;
 const anual = PLANOS_BF[2];
 
 const titulo = `Black Friday: consultoria do Jayme De Lamadrid com ${DESCONTO_BF}% OFF`;
@@ -37,11 +37,11 @@ export const metadata: Metadata = {
     "WNBF",
     "natural bodybuilding",
   ],
-  alternates: { canonical: "/black-friday" },
+  alternates: { canonical: "/black" },
   openGraph: {
     type: "website",
     locale: "pt_BR",
-    url: "/black-friday",
+    url: "/black",
     siteName: PERFIL.marca,
     title: `Black Friday: ${DESCONTO_BF}% OFF na consultoria do Jayme`,
     description: descricao,

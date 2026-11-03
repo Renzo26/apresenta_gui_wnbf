@@ -31,15 +31,18 @@ const nextConfig: NextConfig = {
   // black.delamadridteam.com abre direto na página da Black (a URL continua na raiz)
   async rewrites() {
     return {
-      beforeFiles: [{ source: "/", has: [{ type: "host", value: "black\\..*" }], destination: "/black-friday" }],
+      beforeFiles: [{ source: "/", has: [{ type: "host", value: "black\\..*" }], destination: "/black" }],
     };
   },
-  // links antigos da bio (/links, /links-2) caem na LP, mantendo os UTMs
+  // endereços do site anterior (WordPress) caem nas páginas novas, mantendo os UTMs
   async redirects() {
     return [
       { source: "/links", destination: "/", permanent: false },
       { source: "/links-2", destination: "/", permanent: false },
-      { source: "/black", destination: "/black-friday", permanent: false },
+      { source: "/consultoria", destination: "/", permanent: false },
+      { source: "/black-friday", destination: "/black", permanent: false },
+      { source: "/hello-world", destination: "/", permanent: false },
+      { source: "/teste", destination: "/", permanent: false },
     ];
   },
 };

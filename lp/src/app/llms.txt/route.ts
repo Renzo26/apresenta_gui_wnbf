@@ -12,7 +12,8 @@ export function GET() {
 ## Páginas
 
 - [Consultoria](${siteUrl}/): como funciona o método, resultados de alunos e dúvidas frequentes.
-- [Black Friday](${siteUrl}/black-friday): ${DESCONTO_BF}% de desconto em todos os planos da consultoria.
+- [Black Friday](${siteUrl}/black): ${DESCONTO_BF}% de desconto em todos os planos da consultoria.
+- [Treinos Essenciais 2.0](${siteUrl}/planilhas): planilhas de treino do Jayme, com periodização de 1 ano em cada treino.
 - [Links](${siteUrl}/linktree): consultoria individual, planilhas de treino 2.0 e livro digital.
 
 ## Black Friday

@@ -6,10 +6,12 @@ Um único app serve as duas páginas:
 
 - `/`: a LP completa.
 - `/linktree`: a página de links para a bio do Instagram (`seu-dominio.com.br/linktree`).
-- `/black-friday` (ou `/black`): oferta de Black Friday da consultoria, com as mesmas seções e animações da LP (`src/components/black-friday/`). Valores, bônus e FAQ em `src/lib/black-friday.ts`.
+- `/black`: oferta de Black Friday da consultoria, com as mesmas seções e animações da LP (`src/components/black-friday/`). Valores, bônus e FAQ em `src/lib/black-friday.ts`.
+- `/planilhas`: venda dos Treinos Essenciais 2.0 (textos em `src/lib/planilhas.ts`).
+- `/biblioteca`: vídeos de execução para alunos (links em `src/lib/biblioteca.ts`), fora do Google.
 - `/llms.txt`: resumo do site e da oferta para buscadores com IA.
 
-Os endereços antigos `/links` e `/links-2` redirecionam para a LP.
+Os endereços do site anterior (`/consultoria`, `/links`, `/links-2`, `/black-friday`) redirecionam para as páginas novas. `/planilhas` e `/biblioteca` foram recriadas aqui.
 Next.js 16, React 19, Tailwind CSS 4, GSAP (ScrollTrigger + SplitText), Motion e Lenis.
 
 ## Desenvolvimento
@@ -24,7 +26,7 @@ npm run dev        # http://localhost:3000
 
 ## Banco de dados (leads da Black Friday)
 
-O formulário da `/black-friday` grava em `paginas.leads`, no Postgres do Supabase da VPS (banco `postgres`, schema próprio). Aparece no Studio em Table Editor → schema `paginas`.
+O formulário da `/black` grava em `paginas.leads`, no Postgres do Supabase da VPS (banco `postgres`, schema próprio). Aparece no Studio em Table Editor → schema `paginas`.
 
 - Migrações em Python com Alembic: `db/`. A primeira cria o schema `paginas` e a tabela `leads`; a tabela de versões do Alembic também fica em `paginas`.
 - No deploy, o serviço `paginas-migracao` roda `alembic upgrade head` e só então a página sobe (rodar de novo não faz nada).
