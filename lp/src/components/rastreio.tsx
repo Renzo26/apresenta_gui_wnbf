@@ -3,7 +3,7 @@
 import Script from "next/script";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
-import { evento, guardarOrigem, linkComRef, pageView } from "@/lib/rastreio";
+import { codigoCampanha, evento, guardarOrigem, linkComCodigo, pageView } from "@/lib/rastreio";
 
 const PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID;
 
@@ -11,7 +11,7 @@ const PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID;
  * Meta Pixel + origem da campanha, em todas as páginas.
  * - guarda as UTMs da visita (ver lib/rastreio);
  * - PageView a cada troca de página;
- * - em qualquer link do WhatsApp, acrescenta "(ref: campanha)" na mensagem e envia o evento Contact.
+ * - em qualquer link do WhatsApp, acrescenta "#campanha" na mensagem (se a visita veio de campanha) e envia o evento Contact.
  *   Na Black Friday o clique é segurado pelo formulário (defaultPrevented), que faz isso por conta própria.
  */
 export function Rastreio() {
@@ -32,7 +32,8 @@ export function Rastreio() {
     const onClick = (e: MouseEvent) => {
       const a = (e.target as HTMLElement | null)?.closest<HTMLAnchorElement>('a[href^="https://wa.me/"]');
       if (!a || e.defaultPrevented) return;
-      a.href = linkComRef(a.href);
+      const campanha = codigoCampanha();
+      if (campanha !== "direto") a.href = linkComCodigo(a.href, `#SITE-${campanha}`);
       evento("Contact", { content_name: a.textContent?.trim().replace(/\s+/g, " ").slice(0, 80) });
     };
     document.addEventListener("click", onClick);

@@ -40,22 +40,38 @@ export function origem(): Record<string, string> {
   return {};
 }
 
-/** Código curto que vai na mensagem do WhatsApp para o atendente saber a campanha. */
-export function refCampanha(o = origem()) {
+/** Campanha da visita em forma de código: minúsculas, sem espaço nem acento ("direto" sem campanha). */
+export function codigoCampanha(o = origem()) {
   const ref = o.utm_campaign || o.utm_source || (o.fbclid ? "meta" : o.gclid ? "google" : "");
-  return ref.replace(/\s+/g, "-").slice(0, 60);
+  const slug = ref
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 40);
+  return slug || "direto";
 }
 
-/** Acrescenta "(ref: campanha)" no fim do texto, sem repetir. */
-export function comRef(texto: string, ref = refCampanha()) {
-  if (!ref || texto.includes("(ref:")) return texto;
-  return `${texto} (ref: ${ref})`;
+/**
+ * Código que vai no fim da mensagem do WhatsApp: #PLANO-campanha.
+ * Ex.: #ANUAL-bf-remarketing-30d, #CONTATO-direto. O n8n lê esse código para responder.
+ */
+export function codigoLead(plano?: string, o = origem()) {
+  return `#${(plano || "contato").toUpperCase()}-${codigoCampanha(o)}`;
 }
 
-/** Link wa.me com o "(ref: ...)" no fim da mensagem. */
-export function linkComRef(href: string, ref = refCampanha()) {
+/** Acrescenta o código no fim do texto, sem repetir. */
+export function comCodigo(texto: string, codigo: string) {
+  if (!codigo || /\s#[A-Z]+-/.test(` ${texto}`)) return texto;
+  return `${texto} ${codigo}`.trim();
+}
+
+/** Link wa.me com o código no fim da mensagem (fora da Black, só quando a visita veio de campanha). */
+export function linkComCodigo(href: string, codigo: string) {
   const url = new URL(href);
-  const texto = comRef(url.searchParams.get("text") ?? "", ref);
+  const texto = comCodigo(url.searchParams.get("text") ?? "", codigo);
+  // encodeURIComponent (%20), como nos links originais: o "+" do URLSearchParams aparece literal em alguns WhatsApp
   return `${url.origin}${url.pathname}?text=${encodeURIComponent(texto)}`;
 }
 

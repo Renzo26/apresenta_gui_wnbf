@@ -1,7 +1,7 @@
 // Captura de lead antes do WhatsApp (página da Black Friday).
 // Os dados vão para POST /api/leads, que grava em paginas.leads (tabela criada pelo Alembic em db/)
 // e envia o Lead à Meta pela API de Conversões.
-import { comRef, evento, eventoPersonalizado, idsMeta, novoEventId } from "@/lib/rastreio";
+import { evento, eventoPersonalizado, idsMeta, novoEventId } from "@/lib/rastreio";
 
 export type Lead = {
   nome: string;
@@ -47,14 +47,6 @@ export function validar(c: Campos) {
 export function planoDoLink(href: string) {
   const texto = new URL(href).searchParams.get("text") ?? "";
   return texto.match(/plano (\w+)/i)?.[1];
-}
-
-/** Mesmo link do botão, com o nome da pessoa e a campanha ("(ref: ...)") no fim da mensagem. */
-export function linkComNome(href: string, nome: string, ref?: string) {
-  const url = new URL(href);
-  const texto = comRef(`${url.searchParams.get("text") ?? ""} Meu nome é ${nome.trim()}.`.trim(), ref);
-  // encodeURIComponent (%20), como nos links originais: o "+" do URLSearchParams aparece literal em alguns WhatsApp
-  return `${url.origin}${url.pathname}?text=${encodeURIComponent(texto)}`;
 }
 
 /**

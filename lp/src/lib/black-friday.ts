@@ -50,9 +50,9 @@ export const reais = (v: number) => brl.format(v).replace(/ /g, " ");
 export const valor = (v: number) => reais(v).replace("R$ ", "");
 
 export const ctaPlano = (p: PlanoBF) =>
-  whatsappUrl(`Olá! Quero a condição de Black Friday do plano ${p.nome} da consultoria (${reais(p.por)} à vista).`);
+  whatsappUrl(`Olá! Tenho interesse no plano ${p.nome} da Black Friday.`);
 
-export const CTA_BF = whatsappUrl("Olá! Quero aproveitar a Black Friday da consultoria do Jayme.");
+export const CTA_BF = whatsappUrl("Olá! Quero saber mais sobre a Black Friday da consultoria.");
 
 const anual = PLANOS_BF[2];
 const tri = PLANOS_BF[0];

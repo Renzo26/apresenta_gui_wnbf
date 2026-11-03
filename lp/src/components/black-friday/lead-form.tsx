@@ -5,14 +5,13 @@ import { useLenis } from "lenis/react";
 import { Lock, X } from "lucide-react";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import {
-  linkComNome,
   mascaraTelefone,
   planoDoLink,
   registrarLead,
   validar,
   type Campos,
 } from "@/lib/lead";
-import { eventoPersonalizado, origem, refCampanha } from "@/lib/rastreio";
+import { codigoLead, eventoPersonalizado, linkComCodigo, origem } from "@/lib/rastreio";
 import { cn } from "@/lib/utils";
 
 const GUARDADO = "dlm-lead"; // só preenche o formulário de novo para quem já respondeu, neste navegador
@@ -93,7 +92,7 @@ export function BfLeadForm() {
     } catch {}
 
     // abre no mesmo clique do envio (não é bloqueado como pop-up)
-    window.open(linkComNome(destino.href, campos.nome, refCampanha(utms)), "_blank", "noopener");
+    window.open(linkComCodigo(destino.href, codigoLead(plano, utms)), "_blank", "noopener");
     setDestino(null);
   };
 
