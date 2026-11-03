@@ -1,5 +1,7 @@
 // Captura de lead antes do WhatsApp (página da Black Friday).
-// Os dados vão para POST /api/leads, que grava em paginas.leads (tabela criada pelo Alembic em db/).
+// Os dados vão para POST /api/leads, que grava em paginas.leads (tabela criada pelo Alembic em db/)
+// e envia o Lead à Meta pela API de Conversões.
+import { comRef, evento, idsMeta, novoEventId } from "@/lib/rastreio";
 
 export type Lead = {
   nome: string;
@@ -10,9 +12,11 @@ export type Lead = {
   /** plano escolhido, quando o botão é de um plano */
   plano?: string;
   pagina: string;
-  /** utm_source, utm_campaign etc. da URL, para o gestor de tráfego */
+  /** utm_source, utm_campaign etc. da visita (ver lib/rastreio), para o gestor de tráfego */
   utms: Record<string, string>;
   referrer: string;
+  /** endereço completo da página (event_source_url da Meta) */
+  url?: string;
   /** campo invisível contra robôs: pessoa nunca preenche */
   empresa?: string;
 };
@@ -45,20 +49,12 @@ export function planoDoLink(href: string) {
   return texto.match(/plano (\w+)/i)?.[1];
 }
 
-/** Mesmo link do botão, com o nome da pessoa no fim da mensagem. */
-export function linkComNome(href: string, nome: string) {
+/** Mesmo link do botão, com o nome da pessoa e a campanha ("(ref: ...)") no fim da mensagem. */
+export function linkComNome(href: string, nome: string, ref?: string) {
   const url = new URL(href);
-  const texto = `${url.searchParams.get("text") ?? ""} Meu nome é ${nome.trim()}.`.trim();
+  const texto = comRef(`${url.searchParams.get("text") ?? ""} Meu nome é ${nome.trim()}.`.trim(), ref);
   // encodeURIComponent (%20), como nos links originais: o "+" do URLSearchParams aparece literal em alguns WhatsApp
   return `${url.origin}${url.pathname}?text=${encodeURIComponent(texto)}`;
-}
-
-export function utmsDaPagina() {
-  const utms: Record<string, string> = {};
-  new URLSearchParams(window.location.search).forEach((v, k) => {
-    if (k.startsWith("utm_") || k === "fbclid" || k === "gclid") utms[k] = v;
-  });
-  return utms;
 }
 
 /**
@@ -67,14 +63,16 @@ export function utmsDaPagina() {
  * garante que o envio termina mesmo se a pessoa sair da página.
  */
 export function registrarLead(lead: Lead) {
+  // mesmo id no Pixel e na API de Conversões: a Meta junta os dois e conta um Lead só
+  const eventId = novoEventId();
   fetch("/api/leads", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(lead),
+    body: JSON.stringify({ ...lead, eventId, ...idsMeta() }),
     keepalive: true,
   }).catch(() => {});
 
-  const w = window as Window & { dataLayer?: unknown[]; fbq?: (...args: unknown[]) => void };
-  w.dataLayer?.push({ event: "generate_lead", plano: lead.plano, origem: lead.origem });
-  w.fbq?.("track", "Lead", { content_name: lead.plano ?? "Black Friday" });
+  const w = window as Window & { dataLayer?: unknown[] };
+  w.dataLayer?.push({ event: "generate_lead", plano: lead.plano, origem: lead.origem, campanha: lead.utms.utm_campaign });
+  evento("Lead", { content_name: lead.plano ?? "Consultoria", content_category: "Black Friday" }, eventId);
 }

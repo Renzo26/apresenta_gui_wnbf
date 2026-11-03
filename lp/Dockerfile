@@ -17,6 +17,9 @@ FROM base AS builder
 # A página é pré-renderizada no build, então precisa estar definida AQUI.
 ARG NEXT_PUBLIC_SITE_URL
 ENV NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL}
+# ID do Meta Pixel (público: aparece no HTML). Vazio = sem Pixel.
+ARG NEXT_PUBLIC_META_PIXEL_ID
+ENV NEXT_PUBLIC_META_PIXEL_ID=${NEXT_PUBLIC_META_PIXEL_ID}
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .

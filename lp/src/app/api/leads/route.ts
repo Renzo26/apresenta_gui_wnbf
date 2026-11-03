@@ -1,6 +1,8 @@
-// Recebe o lead do formulário da Black Friday e grava em paginas.leads.
+// Recebe o lead do formulário da Black Friday, grava em paginas.leads e envia o Lead à Meta (API de Conversões).
+import { after } from "next/server";
 import { SCHEMA, db } from "@/lib/db";
 import { validar } from "@/lib/lead";
+import { enviarLeadMeta } from "@/lib/meta-capi";
 
 const LIMITE_BYTES = 8_000;
 const MAX_POR_IP = 5;
@@ -63,6 +65,25 @@ export async function POST(req: Request) {
 
   try {
     await sql`insert into ${sql(SCHEMA)}.leads ${sql(lead)}`;
+    const eventId = texto(corpo.eventId, 100);
+    if (eventId) {
+      // depois da resposta: a pessoa não espera a Meta
+      after(() =>
+        enviarLeadMeta({
+          eventId,
+          url: texto(corpo.url, 500),
+          nome: lead.nome,
+          email: lead.email,
+          telefone: lead.telefone,
+          ip,
+          userAgent: lead.user_agent,
+          fbp: texto(corpo.fbp, 200),
+          fbc: texto(corpo.fbc, 500),
+          plano: lead.plano,
+          campanha: parametros.utm_campaign ?? null,
+        }),
+      );
+    }
     return Response.json({ ok: true }, { status: 201 });
   } catch (e) {
     console.error("[leads] falha ao gravar:", e instanceof Error ? e.message : e);

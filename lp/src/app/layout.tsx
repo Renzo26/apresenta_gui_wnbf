@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Anton, Instrument_Serif, Manrope } from "next/font/google";
+import { Rastreio } from "@/components/rastreio";
 import { CONTACT, PERFIL } from "@/lib/content";
 import "./globals.css";
 
@@ -53,6 +54,8 @@ export const metadata: Metadata = {
   },
   twitter: { card: "summary_large_image" },
   alternates: { canonical: "/" },
+  // verificação do domínio no Gerenciador de Negócios da Meta (vale para todas as páginas)
+  verification: { other: { "facebook-domain-verification": "bjsass3914bur4hv84ymxwhfp263e2" } },
 };
 
 export const viewport: Viewport = {
@@ -80,6 +83,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
         {children}
+        <Rastreio />
       </body>
     </html>
   );

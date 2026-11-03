@@ -9,10 +9,10 @@ import {
   mascaraTelefone,
   planoDoLink,
   registrarLead,
-  utmsDaPagina,
   validar,
   type Campos,
 } from "@/lib/lead";
+import { origem, refCampanha } from "@/lib/rastreio";
 import { cn } from "@/lib/utils";
 
 const GUARDADO = "dlm-lead"; // só preenche o formulário de novo para quem já respondeu, neste navegador
@@ -69,6 +69,7 @@ export function BfLeadForm() {
     setErros(encontrados);
     if (Object.keys(encontrados).length) return;
 
+    const utms = origem();
     registrarLead({
       ...campos,
       nome: campos.nome.trim(),
@@ -76,8 +77,9 @@ export function BfLeadForm() {
       origem: destino.origem,
       plano,
       pagina: window.location.pathname,
-      utms: utmsDaPagina(),
+      utms,
       referrer: document.referrer,
+      url: window.location.href,
       empresa: (e.currentTarget as HTMLFormElement).querySelector<HTMLInputElement>('input[name="empresa"]')?.value,
     });
     try {
@@ -85,7 +87,7 @@ export function BfLeadForm() {
     } catch {}
 
     // abre no mesmo clique do envio (não é bloqueado como pop-up)
-    window.open(linkComNome(destino.href, campos.nome), "_blank", "noopener");
+    window.open(linkComNome(destino.href, campos.nome, refCampanha(utms)), "_blank", "noopener");
     setDestino(null);
   };
 
