@@ -12,6 +12,8 @@ export type PlanoBF = {
   parcela: number;
   destaque?: string;
   extra?: string;
+  /** Item que só este plano tem (aparece em destaque no "Incluso"). */
+  exclusivo?: string;
 };
 
 export const DESCONTO_BF = 10;
@@ -30,6 +32,7 @@ export const PLANOS_BF: PlanoBF[] = [
     parcela: 704.7,
     destaque: "Melhor custo-benefício",
     extra: "Cerca de 35% menos por mês do que no trimestral",
+    exclusivo: "Ligação de alinhamento ao vivo",
   },
 ];
 
@@ -73,6 +76,10 @@ export const FAQ_BF = [
   {
     p: "O que está incluso na consultoria?",
     r: "Avaliação completa, treino e planejamento alimentar individualizados entregues em 3 a 5 dias úteis, suporte diário pelo WhatsApp com o Jayme e a equipe, e reavaliação todo mês com ajustes no plano.",
+  },
+  {
+    p: "Tem alguma diferença no que vem em cada plano?",
+    r: `Todos os planos têm o mesmo acompanhamento: avaliação completa, treino e dieta individualizados, suporte diário no WhatsApp e reavaliação todo mês, além de ${BONUS_BF}. O anual tem ainda uma ligação de alinhamento ao vivo, exclusiva desse plano.`,
   },
   {
     p: "Os bônus da Black valem para todos os planos?",

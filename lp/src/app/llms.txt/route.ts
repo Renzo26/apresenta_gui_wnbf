@@ -20,9 +20,9 @@ export function GET() {
 
 ${RESUMO_BF}
 
-${PLANOS_BF.map((p) => `- Plano ${p.nome} (${p.meses} meses): de ${reais(p.de)} por ${reais(p.por)} à vista, ou ${PARCELAS_BF}x de ${reais(p.parcela)} sem juros no cartão. Equivale a ${reais(p.porMes)} por mês. Inclui ${BONUS_BF}.`).join("\n")}
+${PLANOS_BF.map((p) => `- Plano ${p.nome} (${p.meses} meses): de ${reais(p.de)} por ${reais(p.por)} à vista, ou ${PARCELAS_BF}x de ${reais(p.parcela)} sem juros no cartão. Equivale a ${reais(p.porMes)} por mês. Inclui ${BONUS_BF}.${p.exclusivo ? ` Exclusivo deste plano: ${p.exclusivo.toLowerCase()}.` : ""}`).join("\n")}
 
-## O que está incluso
+## O que está incluso (em todos os planos)
 
 ${INCLUSO_BF.map((i) => `- ${i.titulo}: ${i.texto}`).join("\n")}
 

@@ -73,15 +73,7 @@ export function BfPlanos() {
                   </li>
                 ))}
               </ul>
-              <div className="mt-6 border-t border-carvao/15 pt-5">
-                <p className="text-[0.65rem] font-extrabold uppercase tracking-[0.2em] text-carvao/60">Incluso</p>
-                <ul className="mt-2 grid gap-x-4 gap-y-1.5 text-sm sm:grid-cols-2">
-                  {INCLUSO_BF.map((i) => (
-                    <li key={i.titulo}>{i.titulo}</li>
-                  ))}
-                  <li className="font-bold">+ {BONUS_BF}</li>
-                </ul>
-              </div>
+              <Incluso plano={anual} className="mt-6" />
               <div className="flex-1" />
               <MagneticButton href={ctaPlano(anual)} external variant="carvao" className="mt-8 w-full sm:w-auto sm:self-start">
                 Quero o anual
@@ -116,19 +108,38 @@ function CardMenor({ plano: p }: { plano: PlanoBF }) {
         <h3 className="font-display text-[clamp(2.2rem,3.4vw,2.9rem)] uppercase leading-none">{p.nome}</h3>
         <span className="font-serif text-3xl italic text-bone/40">{p.meses} meses</span>
       </div>
-      <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <Preco plano={p} escuro />
-          <p className="mt-3 text-sm text-bone/65">
-            {reais(p.porMes)}/mês · ou {PARCELAS_BF}x de {reais(p.parcela)} sem juros
-          </p>
-          <p className="mt-1 text-sm font-bold text-ouro">+ {BONUS_BF}</p>
-        </div>
-        <MagneticButton href={ctaPlano(p)} external variant="ouro" className="w-full shrink-0 sm:w-auto">
-          Quero esse
-        </MagneticButton>
+      <div>
+        <Preco plano={p} escuro />
+        <p className="mt-3 text-sm text-bone/65">
+          {reais(p.porMes)}/mês · ou {PARCELAS_BF}x de {reais(p.parcela)} sem juros
+        </p>
       </div>
+      <Incluso plano={p} escuro />
+      <MagneticButton href={ctaPlano(p)} external variant="ouro" className="w-full sm:w-auto sm:self-start">
+        Quero esse
+      </MagneticButton>
     </motion.article>
+  );
+}
+
+/** O que vem no plano: os itens de todos os planos, o exclusivo (só no anual) e os bônus da Black. */
+function Incluso({ plano: p, escuro = false, className = "" }: { plano: PlanoBF; escuro?: boolean; className?: string }) {
+  return (
+    <div className={`border-t pt-5 ${escuro ? "border-bone/15" : "border-carvao/15"} ${className}`}>
+      <p className={`text-[0.65rem] font-extrabold uppercase tracking-[0.2em] ${escuro ? "text-bone/50" : "text-carvao/60"}`}>Incluso</p>
+      <ul className={`mt-2 grid gap-x-4 gap-y-1.5 text-sm sm:grid-cols-2 ${escuro ? "text-bone/85" : ""}`}>
+        {INCLUSO_BF.map((i) => (
+          <li key={i.titulo}>{i.titulo}</li>
+        ))}
+        <li className={`font-bold ${escuro ? "text-ouro" : ""}`}>+ {BONUS_BF}</li>
+      </ul>
+      {p.exclusivo && (
+        <p className="mt-3 flex flex-wrap items-center gap-2 text-sm font-bold">
+          <span className="rounded-full bg-carvao px-2.5 py-0.5 text-[0.6rem] font-extrabold uppercase tracking-[0.16em] text-ouro">Só no anual</span>
+          + {p.exclusivo}
+        </p>
+      )}
+    </div>
   );
 }
 
