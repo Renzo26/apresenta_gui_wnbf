@@ -49,6 +49,8 @@ services:
       META_CAPI_TOKEN: ${META_CAPI_TOKEN:-}
       META_TEST_EVENT_CODE: ${META_TEST_EVENT_CODE:-}
       META_GRAPH_VERSION: ${META_GRAPH_VERSION:-v24.0}
+      # chave que o n8n manda no header x-n8n-token para usar /api/whatsapp/resposta
+      N8N_WHATSAPP_TOKEN: ${N8N_WHATSAPP_TOKEN:-}
     # O Easypanel faz o proxy (Traefik) e o HTTPS: não publique portas no host.
     # Aponte o domínio no painel para o serviço "lp", porta 3000.
     expose:
