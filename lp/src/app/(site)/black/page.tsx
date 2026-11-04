@@ -5,6 +5,7 @@ import { BfHeader } from "@/components/black-friday/header";
 import { BfHero } from "@/components/black-friday/hero";
 import { BfIntro } from "@/components/black-friday/intro";
 import { BfLeadForm } from "@/components/black-friday/lead-form";
+import { BfMotivos } from "@/components/black-friday/motivos";
 import { BfMetodo } from "@/components/black-friday/metodo";
 import { BfPlanos } from "@/components/black-friday/planos";
 import { BfResultados } from "@/components/black-friday/resultados";
@@ -117,6 +118,7 @@ export default function BlackFriday() {
 
         <BfMetodo />
         <BfResultados />
+        <BfMotivos />
 
         <div className="px-2.5 pb-2.5 sm:px-4 sm:pb-4">
           <div className="grain relative rounded-[2rem] bg-bone sm:rounded-[2.75rem]">

@@ -46,6 +46,22 @@ export const INCLUSO_BF = [
   { titulo: "Reavaliação todo mês", texto: "Questionários mensais e ajustes no plano conforme a resposta do seu corpo." },
 ];
 
+/** "Por que você não pode perder essa condição?": a seção entre os resultados e o Jayme. */
+export const MOTIVOS_BF = [
+  {
+    titulo: "A primeira Black da consultoria",
+    texto: "É a primeira e provavelmente a última vez que a consultoria individual entra na Black Friday.",
+  },
+  {
+    titulo: "Fuja do reajuste de 2027",
+    texto: "Os valores dos planos não mudam desde 2024 e serão reajustados em janeiro de 2027.",
+  },
+  {
+    titulo: "Esse valor é seu para sempre",
+    texto: "Você renova sempre por esse valor, enquanto decidir continuar no time.",
+  },
+];
+
 const brl = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
 /** "R$ 1.214,10" com espaço inquebrável trocado por espaço comum (evita diferença servidor/cliente). */
 export const reais = (v: number) => brl.format(v).replace(/ /g, " ");
@@ -84,6 +100,10 @@ export const FAQ_BF = [
   {
     p: "Os bônus da Black valem para todos os planos?",
     r: `Sim. Trimestral, semestral e anual levam ${BONUS_BF}. A equipe passa os detalhes de cada um no WhatsApp.`,
+  },
+  {
+    p: "O valor da Black vale para as renovações?",
+    r: "Sim. Os valores normais não são reajustados desde 2024 e serão reajustados em janeiro de 2027. Entrando agora, você foge do reajuste e renova sempre pelo valor da Black, enquanto decidir continuar no time.",
   },
   {
     p: "Como faço para garantir a condição?",

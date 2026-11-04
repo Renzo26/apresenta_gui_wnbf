@@ -85,7 +85,7 @@ export function BfSobre() {
         </div>
 
         <div className="lg:col-span-6 lg:col-start-7">
-          <Eyebrow index="05">Quem vai te acompanhar</Eyebrow>
+          <Eyebrow index="06">Quem vai te acompanhar</Eyebrow>
           <SplitReveal className="mt-6 font-display text-[clamp(2.8rem,5.5vw,5rem)] uppercase leading-[0.92] text-carvao">
             Atleta natural, <span className="font-serif normal-case italic text-ouro-deep">treinador de naturais</span>
           </SplitReveal>

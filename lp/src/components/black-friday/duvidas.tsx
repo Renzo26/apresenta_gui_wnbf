@@ -15,7 +15,7 @@ export function BfDuvidas() {
     <section id="duvidas" className="px-6 pb-24 pt-8 sm:px-10 sm:pb-32">
       <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-12">
         <div className="lg:col-span-4">
-          <Eyebrow index="06">Dúvidas sobre a Black</Eyebrow>
+          <Eyebrow index="07">Dúvidas sobre a Black</Eyebrow>
           <SplitReveal className="mt-6 font-display text-[clamp(2.8rem,5vw,4.6rem)] uppercase leading-[0.92] text-carvao">
             Antes de <span className="font-serif normal-case italic text-ouro-deep">garantir</span>
           </SplitReveal>
