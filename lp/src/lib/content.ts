@@ -2,8 +2,8 @@
 // ou de dados informados pelo cliente. Mudou um texto ou link? Mude só aqui.
 
 export const CONTACT = {
-  phoneE164: "5555984585501",
-  phoneDisplay: "(55) 98458-5501",
+  phoneE164: "555592058149",
+  phoneDisplay: "(55) 9205-8149",
 };
 
 export function whatsappUrl(message: string) {
