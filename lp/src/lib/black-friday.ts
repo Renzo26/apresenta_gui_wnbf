@@ -63,7 +63,7 @@ const tri = PLANOS_BF[0];
 export const FAQ_BF = [
   {
     p: "Quanto custa a consultoria do Jayme De Lamadrid na Black Friday?",
-    r: `Todos os planos estão com ${DESCONTO_BF}% de desconto: ${PLANOS_BF.map((p) => `${p.nome.toLowerCase()} de ${reais(p.de)} por ${reais(p.por)}`).join(", ")}, à vista.`,
+    r: `Todos os planos estão com ${DESCONTO_BF}% de desconto: ${PLANOS_BF.map((p) => `${p.nome.toLowerCase()} de ${reais(p.de)} por ${reais(p.por)}`).join(", ")}, à vista ou em ${PARCELAS_BF}x sem juros no cartão.`,
   },
   {
     p: "Posso parcelar?",
