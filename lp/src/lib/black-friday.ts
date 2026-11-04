@@ -71,7 +71,7 @@ export const FAQ_BF = [
   },
   {
     p: "Qual plano compensa mais?",
-    r: `O anual. Sai por ${reais(anual.porMes)} por mês de acompanhamento, contra ${reais(tri.porMes)} no trimestral: cerca de 35% menos por mês.`,
+    r: `O anual. Sai por ${reais(anual.porMes)} por mês de acompanhamento, contra ${reais(tri.porMes)} no trimestral: cerca de 35% menos por mês. E você ainda ganha uma ligação particular para alinhamento do objetivo.`,
   },
   {
     p: "O que está incluso na consultoria?",
