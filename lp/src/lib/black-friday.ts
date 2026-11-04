@@ -37,6 +37,9 @@ export const PLANOS_BF: PlanoBF[] = [
 ];
 
 export const BONUS_BF = "os três bônus da Black";
+/** Os três bônus da Black, iguais em todos os planos. */
+export const BONUS_LISTA_BF = ["Curso de Nutrição Prática", "E-book A Musculação para Naturais", `${DESCONTO_BF}% de desconto + ${PARCELAS_BF}x sem juros`];
+const bonusTexto = `${BONUS_LISTA_BF[0]}, ${BONUS_LISTA_BF[1]} e ${BONUS_LISTA_BF[2]}`;
 
 /** O que vem na consultoria: os mesmos itens da página da consultoria. */
 export const INCLUSO_BF = [
@@ -98,8 +101,12 @@ export const FAQ_BF = [
     r: `Todos os planos têm o mesmo acompanhamento: avaliação completa, treino e dieta individualizados, suporte diário no WhatsApp e reavaliação todo mês, além de ${BONUS_BF}. O anual tem ainda uma ligação de alinhamento ao vivo, exclusiva desse plano.`,
   },
   {
+    p: "Quais são os três bônus da Black?",
+    r: `${bonusTexto}. Valem para todos os planos.`,
+  },
+  {
     p: "Os bônus da Black valem para todos os planos?",
-    r: `Sim. Trimestral, semestral e anual levam ${BONUS_BF}. A equipe passa os detalhes de cada um no WhatsApp.`,
+    r: `Sim. Trimestral, semestral e anual levam ${BONUS_BF}: ${bonusTexto}. A equipe passa os detalhes de cada um no WhatsApp.`,
   },
   {
     p: "O valor da Black vale para as renovações?",

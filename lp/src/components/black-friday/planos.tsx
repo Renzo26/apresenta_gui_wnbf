@@ -3,7 +3,7 @@
 import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Check } from "lucide-react";
+import { Check, Gift } from "lucide-react";
 import { motion } from "motion/react";
 import Image from "next/image";
 import { useRef } from "react";
@@ -11,7 +11,7 @@ import medalha from "@/assets/jayme-medalha.jpg";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { MagneticButton } from "@/components/ui/magnetic-button";
 import { SplitReveal } from "@/components/ui/split-reveal";
-import { BONUS_BF, DESCONTO_BF, INCLUSO_BF, PARCELAS_BF, PLANOS_BF, ctaPlano, reais, valor, type PlanoBF } from "@/lib/black-friday";
+import { BONUS_BF, BONUS_LISTA_BF, DESCONTO_BF, INCLUSO_BF, PARCELAS_BF, PLANOS_BF, ctaPlano, reais, valor, type PlanoBF } from "@/lib/black-friday";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -131,7 +131,15 @@ function Incluso({ plano: p, escuro = false, className = "" }: { plano: PlanoBF;
         {INCLUSO_BF.map((i) => (
           <li key={i.titulo}>{i.titulo}</li>
         ))}
-        <li className={`font-bold ${escuro ? "text-ouro" : ""}`}>+ {BONUS_BF}</li>
+      </ul>
+      <p className={`mt-3 text-sm font-bold ${escuro ? "text-ouro" : ""}`}>+ {BONUS_BF}:</p>
+      <ul className={`mt-1.5 space-y-1 text-sm ${escuro ? "text-bone/85" : ""}`}>
+        {BONUS_LISTA_BF.map((b) => (
+          <li key={b} className="flex gap-2">
+            <Gift className={`mt-0.5 size-4 shrink-0 ${escuro ? "text-ouro" : "text-carvao/70"}`} aria-hidden />
+            {b}
+          </li>
+        ))}
       </ul>
       {p.exclusivo && (
         <p className="mt-3 flex flex-wrap items-center gap-2 text-sm font-bold">
