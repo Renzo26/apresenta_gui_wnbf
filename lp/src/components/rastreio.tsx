@@ -33,7 +33,9 @@ export function Rastreio() {
       const a = (e.target as HTMLElement | null)?.closest<HTMLAnchorElement>('a[href^="https://wa.me/"]');
       if (!a || e.defaultPrevented) return;
       const campanha = codigoCampanha();
-      if (campanha !== "direto") a.href = linkComCodigo(a.href, `#SITE-${campanha}`);
+      // o linktree sempre leva o código (o CRM mostra que o lead veio dele); nas outras páginas, só com campanha
+      if (window.location.pathname.startsWith("/linktree")) a.href = linkComCodigo(a.href, `#LINKTREE-${campanha}`);
+      else if (campanha !== "direto") a.href = linkComCodigo(a.href, `#SITE-${campanha}`);
       evento("Contact", { content_name: a.textContent?.trim().replace(/\s+/g, " ").slice(0, 80) });
     };
     document.addEventListener("click", onClick);
