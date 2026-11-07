@@ -42,7 +42,9 @@ export function origem(): Record<string, string> {
 
 /** Campanha da visita em forma de código: minúsculas, sem espaço nem acento ("direto" sem campanha). */
 export function codigoCampanha(o = origem()) {
-  const ref = o.utm_campaign || o.utm_source || (o.fbclid ? "meta" : o.gclid ? "google" : "");
+  // o Instagram põe sozinho utm_source=ig&utm_content=link_in_bio no link da bio: isso é a bio, não campanha
+  const bio = o.utm_content === "link_in_bio" || (!o.utm_campaign && /^(ig|instagram)$/i.test(o.utm_source ?? ""));
+  const ref = o.utm_campaign || (bio ? "bio" : o.utm_source) || (o.fbclid ? "meta" : o.gclid ? "google" : "");
   const slug = ref
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
