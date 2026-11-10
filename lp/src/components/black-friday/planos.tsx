@@ -66,13 +66,7 @@ export function BfPlanos() {
                 {anual.nome} <span className="font-serif text-[0.6em] normal-case italic text-carvao/50">12 meses</span>
               </h3>
               <Preco plano={anual} className="mt-5" />
-              <ul className="mt-5 space-y-2 text-[0.95rem] leading-snug text-carvao/85">
-                {[...(anual.comJuros ? [`Ou em até ${anual.comJuros}x com juros no cartão`] : []), ...(anual.extra ? [anual.extra] : [])].map((t) => (
-                  <li key={t} className="flex gap-2.5">
-                    <Bolinha /> {t}
-                  </li>
-                ))}
-              </ul>
+              <Checks itens={[...outrasFormas(anual), ...(anual.extra ? [anual.extra] : [])]} className="mt-5" />
               <Incluso plano={anual} className="mt-6" />
               <div className="flex-1" />
               <MagneticButton href={ctaPlano(anual)} external variant="carvao" className="mt-8 w-full sm:w-auto sm:self-start">
@@ -98,8 +92,6 @@ export function BfPlanos() {
 }
 
 function CardMenor({ plano: p }: { plano: PlanoBF }) {
-  // valor por mês (quando difere da parcela) e o parcelamento com juros, se o plano tiver
-  const detalhe = [p.porMes !== p.parcela ? `${reais(p.porMes)}/mês` : "", p.comJuros ? `ou em até ${p.comJuros}x com juros` : ""].filter(Boolean).join(" · ");
   return (
     <motion.article
       whileHover={{ y: -6 }}
@@ -112,7 +104,7 @@ function CardMenor({ plano: p }: { plano: PlanoBF }) {
       </div>
       <div>
         <Preco plano={p} escuro />
-        {detalhe && <p className="mt-3 text-sm text-bone/65">{detalhe}</p>}
+        <Checks itens={outrasFormas(p)} escuro className="mt-5" />
       </div>
       <Incluso plano={p} escuro />
       <MagneticButton href={ctaPlano(p)} external variant="ouro" className="w-full sm:w-auto sm:self-start">
@@ -154,8 +146,11 @@ function Incluso({ plano: p, escuro = false, className = "" }: { plano: PlanoBF;
 function Preco({ plano: p, escuro = false, className = "" }: { plano: PlanoBF; escuro?: boolean; className?: string }) {
   return (
     <div className={className}>
-      {/* em destaque a parcela sem juros; o valor à vista (e o preço cheio riscado) logo abaixo */}
-      <div className="overflow-hidden">
+      {/* "De R$ X por" e, em destaque, a parcela sem juros; à vista e com juros vão nos checks abaixo */}
+      <p className={`text-sm ${escuro ? "text-bone/55" : "text-carvao/70"}`}>
+        De <s>{reais(p.de)}</s> por
+      </p>
+      <div className="mt-1 overflow-hidden">
         <p className="plano-preco flex items-start font-display leading-none">
           <span className={escuro ? "mr-2 mt-2 text-3xl" : "mr-2 mt-2.5 text-4xl"}>{PARCELAS_BF}x</span>
           <span className="mr-1 mt-1.5 text-xl">R$</span>
@@ -163,17 +158,24 @@ function Preco({ plano: p, escuro = false, className = "" }: { plano: PlanoBF; e
           <span className="ml-2 self-end pb-1.5 text-xs font-bold uppercase tracking-[0.14em]">sem juros</span>
         </p>
       </div>
-      <p className={`mt-2 text-sm ${escuro ? "text-bone/65" : "text-carvao/75"}`}>
-        ou <strong className={escuro ? "font-semibold text-bone" : "font-semibold text-carvao"}>{reais(p.por)}</strong> à vista · de <s>{reais(p.de)}</s>
-      </p>
     </div>
   );
 }
 
-function Bolinha() {
+/** As outras formas de pagar: à vista e, se o plano tiver, o parcelamento com juros. */
+const outrasFormas = (p: PlanoBF) => [`Ou ${reais(p.por)} à vista`, ...(p.comJuros ? [`Ou em até ${p.comJuros}x com juros no cartão`] : [])];
+
+function Checks({ itens, escuro = false, className = "" }: { itens: string[]; escuro?: boolean; className?: string }) {
   return (
-    <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-carvao text-ouro">
-      <Check className="size-3" strokeWidth={3} />
-    </span>
+    <ul className={`space-y-2 text-[0.95rem] leading-snug ${escuro ? "text-bone/80" : "text-carvao/85"} ${className}`}>
+      {itens.map((t) => (
+        <li key={t} className="flex gap-2.5">
+          <span className={`mt-0.5 grid size-5 shrink-0 place-items-center rounded-full ${escuro ? "bg-ouro text-carvao" : "bg-carvao text-ouro"}`}>
+            <Check className="size-3" strokeWidth={3} />
+          </span>
+          {t}
+        </li>
+      ))}
+    </ul>
   );
 }
