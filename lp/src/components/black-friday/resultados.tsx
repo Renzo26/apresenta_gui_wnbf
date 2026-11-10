@@ -23,6 +23,7 @@ import warleyDepois from "@/assets/warley-depois.jpg";
 // aluna da Black: montagens prontas (fevereiro x dezembro de 2024), exibidas inteiras
 import aluna7FrenteCostas from "@/assets/resultados/aluna7-frente-costas.jpg";
 import aluna7Perfil from "@/assets/resultados/aluna7-perfil.jpg";
+import aluna8 from "@/assets/resultados/aluna8.jpg";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { SplitReveal } from "@/components/ui/split-reveal";
 import { DEPOIMENTOS_COMPLETOS } from "@/lib/content";
@@ -36,6 +37,25 @@ const FOTOS: [StaticImageData, StaticImageData][] = [
   [warleyAntes, warleyDepois],
   [aluno5Antes, aluno5Depois],
   [aluno6Antes, aluno6Depois],
+];
+
+/** Casos em destaque (montagens prontas com as datas): a primeira linha da seção. */
+const DESTAQUES: { titulo: string; periodo: string; texto: string; fotos: { img: StaticImageData; alt: string }[] }[] = [
+  {
+    titulo: "10 meses",
+    periodo: "de fevereiro a dezembro de 2024",
+    texto: "A mesma aluna, nos mesmos ângulos: frente, costas e perfil em fevereiro e em dezembro de 2024.",
+    fotos: [
+      { img: aluna7FrenteCostas, alt: "Aluna da consultoria de frente e de costas: fevereiro e dezembro de 2024" },
+      { img: aluna7Perfil, alt: "Aluna da consultoria de perfil: fevereiro e dezembro de 2024" },
+    ],
+  },
+  {
+    titulo: "16 meses",
+    periodo: "de dezembro de 2021 a abril de 2023",
+    texto: "Mais massa muscular e abdômen à mostra, com treino e dieta ajustados ao longo do acompanhamento.",
+    fotos: [{ img: aluna8, alt: "Aluna da consultoria em dezembro de 2021 e em abril de 2023" }],
+  },
 ];
 
 const RESULTADOS = DEPOIMENTOS_COMPLETOS.map((d, i) => ({ ...d, antes: FOTOS[i][0], depois: FOTOS[i][1] }));
@@ -78,27 +98,27 @@ export function BfResultados() {
           </div>
 
           <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5">
-            <li className="res-card overflow-hidden rounded-[1.75rem] bg-carvao text-bone sm:col-span-2 lg:col-span-3">
-              <div className="grid gap-1.5 p-1.5 lg:grid-cols-[1fr_1fr_0.85fr]">
-                {[
-                  { img: aluna7FrenteCostas, alt: "Aluna da consultoria de frente e de costas: fevereiro e dezembro de 2024" },
-                  { img: aluna7Perfil, alt: "Aluna da consultoria de perfil: fevereiro e dezembro de 2024" },
-                ].map((f) => (
-                  <div key={f.alt} className="relative aspect-square overflow-hidden rounded-[1.25rem] bg-grafite">
-                    <Image src={f.img} alt={f.alt} fill placeholder="blur" sizes="(min-width: 1024px) 420px, 95vw" className="object-cover" />
-                  </div>
-                ))}
-                <div className="flex flex-col justify-center p-5 sm:p-7">
-                  <p className="flex items-baseline gap-2">
-                    <span className="font-display text-5xl leading-none text-ouro">10 meses</span>
-                  </p>
-                  <p className="mt-2 text-xs font-bold uppercase tracking-[0.14em] text-bone/70">de fevereiro a dezembro de 2024</p>
-                  <p className="mt-5 text-[0.95rem] leading-relaxed text-bone/80">
-                    A mesma aluna, nos mesmos ângulos: frente, costas e perfil em fevereiro e em dezembro de 2024.
-                  </p>
+            {DESTAQUES.map((d) => (
+              <li
+                key={d.titulo + d.periodo}
+                className={`res-card flex flex-col overflow-hidden rounded-[1.75rem] bg-carvao text-bone sm:col-span-2 ${
+                  d.fotos.length > 1 ? "lg:col-span-2" : "sm:grid sm:grid-cols-2 sm:items-center lg:col-span-1 lg:flex lg:items-stretch"
+                }`}
+              >
+                <div className={`grid gap-1.5 p-1.5 ${d.fotos.length > 1 ? "sm:grid-cols-2" : ""}`}>
+                  {d.fotos.map((f) => (
+                    <div key={f.alt} className="relative aspect-square overflow-hidden rounded-[1.25rem] bg-grafite">
+                      <Image src={f.img} alt={f.alt} fill placeholder="blur" sizes="(min-width: 1024px) 420px, (min-width: 640px) 45vw, 95vw" className="object-cover" />
+                    </div>
+                  ))}
                 </div>
-              </div>
-            </li>
+                <div className="flex flex-1 flex-col justify-center p-5 pt-4 sm:p-6 sm:pt-5">
+                  <p className="font-display text-4xl leading-none text-ouro">{d.titulo}</p>
+                  <p className="mt-2 text-xs font-bold uppercase tracking-[0.14em] text-bone/70">{d.periodo}</p>
+                  <p className="mt-4 text-[0.95rem] leading-relaxed text-bone/80">{d.texto}</p>
+                </div>
+              </li>
+            ))}
             {RESULTADOS.map((r, i) => (
               <li key={i} className="res-card flex flex-col overflow-hidden rounded-[1.75rem] bg-carvao text-bone">
                 {/* fotos inteiras: cada uma no mesmo quadro, sem recorte; o espaço que sobra é a própria foto desfocada */}
