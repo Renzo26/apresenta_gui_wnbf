@@ -10,7 +10,7 @@ import { useRef } from "react";
 // só a metade de cima do recorte: é o que aparece no arco, e o arquivo fica menor (LCP)
 import busto from "@/assets/jayme-bf-busto.png";
 import { MagneticButton } from "@/components/ui/magnetic-button";
-import { CTA_BF, DESCONTO_BF, PARCELAS_BF, PLANOS_BF, reais } from "@/lib/black-friday";
+import { CTA_BF, DESCONTO_BF, PARCELAS_BF } from "@/lib/black-friday";
 import { BF_INTRO_DURATION } from "./intro";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -28,7 +28,6 @@ const SELOS = [
   { icon: Gift, texto: ["3 bônus", "da Black"] },
 ];
 
-const anual = PLANOS_BF[2];
 
 /**
  * Hero em pôster: "BLACK FRIDAY" vazado ao fundo, texto à esquerda e o Jayme saindo de um arco amarelo,
@@ -46,10 +45,8 @@ export function BfHero() {
         gsap.from(".hero-arco", { scaleY: 0, transformOrigin: "50% 100%", duration: 1.4, ease: "expo.out", delay: d - 0.5 });
         gsap.from(".hero-atleta", { yPercent: 22, duration: 1.8, ease: "expo.out", delay: d - 0.3 });
         gsap.from(".hero-poster span", { yPercent: 100, duration: 1.4, ease: "expo.out", stagger: 0.12, delay: d - 0.6 });
-        gsap.from(".hero-ticket", { y: 60, rotate: 8, autoAlpha: 0, duration: 1.2, ease: "back.out(1.6)", delay: d + 0.5 });
         gsap.from(".hero-linha", { scaleX: 0, duration: 1.2, ease: "expo.out", delay: d + 0.4 });
         // ticket balança de leve
-        gsap.to(".hero-ticket", { rotate: -2, y: -6, duration: 2.4, ease: "sine.inOut", yoyo: true, repeat: -1, delay: d + 1.8 });
 
         const st = { trigger: ref.current, start: "top top", end: "bottom top", scrub: true };
         gsap.to(".hero-palco", { yPercent: 10, ease: "none", scrollTrigger: st });
@@ -119,18 +116,6 @@ export function BfHero() {
                 <span className="font-display text-xl sm:text-3xl">-{DESCONTO_BF}%</span>
               </motion.div>
 
-              {/* ticket de preço */}
-              <div className="hero-ticket absolute -left-[10%] bottom-[8%] hidden -rotate-6 whitespace-nowrap rounded-2xl bg-bone px-4 py-3 text-left text-carvao shadow-[0_25px_50px_-15px_rgba(0,0,0,0.8)] tall:block sm:px-5 sm:py-4 lg:-left-[8%] lg:block xl:-left-[18%]">
-                <span aria-hidden className="absolute -right-2 top-1/2 size-4 -translate-y-1/2 rounded-full bg-carvao" />
-                <p className="text-[0.6rem] font-extrabold uppercase tracking-[0.18em] text-carvao/60 sm:text-[0.65rem]">Plano anual · a partir de</p>
-                <p className="mt-0.5 font-display text-[clamp(1.6rem,7vw,2.6rem)] leading-none">
-                  {reais(anual.porMes)}
-                  <span className="text-[0.5em]">/mês</span>
-                </p>
-                <p className="mt-1 text-[0.65rem] text-carvao/65 sm:text-xs">
-                  ou {reais(anual.por)} à vista · <s>{reais(anual.de)}</s>
-                </p>
-              </div>
             </div>
           </div>
 

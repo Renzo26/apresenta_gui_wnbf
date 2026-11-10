@@ -11,7 +11,7 @@ import medalha from "@/assets/jayme-medalha.jpg";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { MagneticButton } from "@/components/ui/magnetic-button";
 import { SplitReveal } from "@/components/ui/split-reveal";
-import { BONUS_BF, BONUS_LISTA_BF, DESCONTO_BF, INCLUSO_BF, PARCELAS_BF, PLANOS_BF, ctaPlano, parcelamento, reais, valor, type PlanoBF } from "@/lib/black-friday";
+import { BONUS_BF, BONUS_LISTA_BF, DESCONTO_BF, INCLUSO_BF, PARCELAS_BF, PLANOS_BF, ctaPlano, reais, valor, type PlanoBF } from "@/lib/black-friday";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -67,7 +67,7 @@ export function BfPlanos() {
               </h3>
               <Preco plano={anual} className="mt-5" />
               <ul className="mt-5 space-y-2 text-[0.95rem] leading-snug text-carvao/85">
-                {[`Ou ${parcelamento(anual)} no cartão`, ...(anual.extra ? [anual.extra] : [])].map((t) => (
+                {[...(anual.comJuros ? [`Ou em até ${anual.comJuros}x com juros no cartão`] : []), ...(anual.extra ? [anual.extra] : [])].map((t) => (
                   <li key={t} className="flex gap-2.5">
                     <Bolinha /> {t}
                   </li>
@@ -98,6 +98,8 @@ export function BfPlanos() {
 }
 
 function CardMenor({ plano: p }: { plano: PlanoBF }) {
+  // valor por mês (quando difere da parcela) e o parcelamento com juros, se o plano tiver
+  const detalhe = [p.porMes !== p.parcela ? `${reais(p.porMes)}/mês` : "", p.comJuros ? `ou em até ${p.comJuros}x com juros` : ""].filter(Boolean).join(" · ");
   return (
     <motion.article
       whileHover={{ y: -6 }}
@@ -110,9 +112,7 @@ function CardMenor({ plano: p }: { plano: PlanoBF }) {
       </div>
       <div>
         <Preco plano={p} escuro />
-        <p className="mt-3 text-sm text-bone/65">
-          {reais(p.porMes)}/mês · ou {parcelamento(p)}
-        </p>
+        {detalhe && <p className="mt-3 text-sm text-bone/65">{detalhe}</p>}
       </div>
       <Incluso plano={p} escuro />
       <MagneticButton href={ctaPlano(p)} external variant="ouro" className="w-full sm:w-auto sm:self-start">
@@ -154,16 +154,18 @@ function Incluso({ plano: p, escuro = false, className = "" }: { plano: PlanoBF;
 function Preco({ plano: p, escuro = false, className = "" }: { plano: PlanoBF; escuro?: boolean; className?: string }) {
   return (
     <div className={className}>
-      <p className={`text-sm ${escuro ? "text-bone/55" : "text-carvao/70"}`}>
-        De <s>{reais(p.de)}</s> por
-      </p>
+      {/* em destaque a parcela sem juros; o valor à vista (e o preço cheio riscado) logo abaixo */}
       <div className="overflow-hidden">
-        <p className="plano-preco mt-1 flex items-start font-display leading-none">
+        <p className="plano-preco flex items-start font-display leading-none">
+          <span className={escuro ? "mr-2 mt-2 text-3xl" : "mr-2 mt-2.5 text-4xl"}>{PARCELAS_BF}x</span>
           <span className="mr-1 mt-1.5 text-xl">R$</span>
-          <span className={escuro ? "text-[clamp(3rem,11vw,3.8rem)]" : "text-[clamp(3.6rem,14vw,5.4rem)]"}>{valor(p.por)}</span>
-          <span className="ml-2 self-end pb-1.5 text-xs font-bold uppercase tracking-[0.14em]">à vista</span>
+          <span className={escuro ? "text-[clamp(3rem,11vw,3.8rem)]" : "text-[clamp(3.6rem,14vw,5.4rem)]"}>{valor(p.parcela)}</span>
+          <span className="ml-2 self-end pb-1.5 text-xs font-bold uppercase tracking-[0.14em]">sem juros</span>
         </p>
       </div>
+      <p className={`mt-2 text-sm ${escuro ? "text-bone/65" : "text-carvao/75"}`}>
+        ou <strong className={escuro ? "font-semibold text-bone" : "font-semibold text-carvao"}>{reais(p.por)}</strong> à vista · de <s>{reais(p.de)}</s>
+      </p>
     </div>
   );
 }
