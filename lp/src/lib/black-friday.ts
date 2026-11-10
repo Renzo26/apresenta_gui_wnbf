@@ -10,6 +10,8 @@ export type PlanoBF = {
   por: number;
   porMes: number;
   parcela: number;
+  /** Parcelamento com juros no cartão (além dos 3x sem juros), quando o plano permite. */
+  comJuros?: number;
   destaque?: string;
   extra?: string;
   /** Item que só este plano tem (aparece em destaque no "Incluso"). */
@@ -21,7 +23,7 @@ export const PARCELAS_BF = 3;
 
 export const PLANOS_BF: PlanoBF[] = [
   { id: "trimestral", nome: "Trimestral", meses: 3, de: 899, por: 809.1, porMes: 269.7, parcela: 269.7 },
-  { id: "semestral", nome: "Semestral", meses: 6, de: 1349, por: 1214.1, porMes: 202.35, parcela: 404.7 },
+  { id: "semestral", nome: "Semestral", meses: 6, de: 1349, por: 1214.1, porMes: 202.35, parcela: 404.7, comJuros: 6 },
   {
     id: "anual",
     nome: "Anual",
@@ -30,6 +32,7 @@ export const PLANOS_BF: PlanoBF[] = [
     por: 2114.1,
     porMes: 176.18,
     parcela: 704.7,
+    comJuros: 10,
     destaque: "Melhor custo-benefício",
     extra: "Cerca de 35% menos por mês do que no trimestral",
     exclusivo: "Ligação de alinhamento ao vivo",
@@ -65,6 +68,11 @@ export const MOTIVOS_BF = [
   },
 ];
 
+/** "ou até 10x com juros" (vazio quando o plano só tem os 3x sem juros). */
+export const comJuros = (p: PlanoBF) => (p.comJuros ? `ou até ${p.comJuros}x com juros` : "");
+/** "3x de R$ 704,70 sem juros ou até 10x com juros". */
+export const parcelamento = (p: PlanoBF) => [`${PARCELAS_BF}x de ${reais(p.parcela)} sem juros`, comJuros(p)].filter(Boolean).join(" ");
+
 const brl = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
 /** "R$ 1.214,10" com espaço inquebrável trocado por espaço comum (evita diferença servidor/cliente). */
 export const reais = (v: number) => brl.format(v).replace(/ /g, " ");
@@ -82,11 +90,11 @@ const tri = PLANOS_BF[0];
 export const FAQ_BF = [
   {
     p: "Quanto custa a consultoria do Jayme De Lamadrid na Black Friday?",
-    r: `Todos os planos estão com ${DESCONTO_BF}% de desconto: ${PLANOS_BF.map((p) => `${p.nome.toLowerCase()} de ${reais(p.de)} por ${reais(p.por)}`).join(", ")}, à vista ou em ${PARCELAS_BF}x sem juros no cartão.`,
+    r: `Todos os planos estão com ${DESCONTO_BF}% de desconto: ${PLANOS_BF.map((p) => `${p.nome.toLowerCase()} de ${reais(p.de)} por ${reais(p.por)}`).join(", ")}, à vista ou em ${PARCELAS_BF}x sem juros no cartão. O semestral também sai em até 6x e o anual em até 10x, com juros.`,
   },
   {
     p: "Posso parcelar?",
-    r: `Sim, em até ${PARCELAS_BF}x sem juros no cartão: ${PLANOS_BF.map((p) => `${p.nome.toLowerCase()} em ${PARCELAS_BF}x de ${reais(p.parcela)}`).join(", ")}.`,
+    r: `Sim, no cartão. ${PLANOS_BF.map((p) => `${p.nome}: ${parcelamento(p)}`).join(". ")}.`,
   },
   {
     p: "Qual plano compensa mais?",

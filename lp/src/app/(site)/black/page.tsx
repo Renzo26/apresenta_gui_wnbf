@@ -14,7 +14,7 @@ import { BfStatement } from "@/components/black-friday/statement";
 import { BfStickyCta } from "@/components/black-friday/sticky-cta";
 import { Marquee } from "@/components/sections/marquee";
 import { PERFIL } from "@/lib/content";
-import { BONUS_BF, DESCONTO_BF, FAQ_BF, PARCELAS_BF, PLANOS_BF, RESUMO_BF, reais } from "@/lib/black-friday";
+import { BONUS_BF, DESCONTO_BF, FAQ_BF, PARCELAS_BF, PLANOS_BF, RESUMO_BF, parcelamento, reais } from "@/lib/black-friday";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 const url = `${siteUrl}/black`;
@@ -75,7 +75,7 @@ const jsonLd = {
         priceCurrency: "BRL",
         url: `${url}#planos`,
         availability: "https://schema.org/InStock",
-        description: `De ${reais(p.de)} por ${reais(p.por)} à vista ou ${PARCELAS_BF}x de ${reais(p.parcela)} sem juros. Equivale a ${reais(p.porMes)} por mês. Inclui ${BONUS_BF}.`,
+        description: `De ${reais(p.de)} por ${reais(p.por)} à vista ou ${parcelamento(p)}. Equivale a ${reais(p.porMes)} por mês. Inclui ${BONUS_BF}.`,
       })),
     },
     {

@@ -1,6 +1,6 @@
 // /llms.txt: resumo em texto do site para buscadores e assistentes de IA (GEO).
 import { CONTACT, PERFIL } from "@/lib/content";
-import { BONUS_BF, BONUS_LISTA_BF, DESCONTO_BF, FAQ_BF, INCLUSO_BF, PARCELAS_BF, PLANOS_BF, RESUMO_BF, reais } from "@/lib/black-friday";
+import { BONUS_BF, BONUS_LISTA_BF, DESCONTO_BF, FAQ_BF, INCLUSO_BF, PLANOS_BF, RESUMO_BF, parcelamento, reais } from "@/lib/black-friday";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
@@ -20,7 +20,7 @@ export function GET() {
 
 ${RESUMO_BF}
 
-${PLANOS_BF.map((p) => `- Plano ${p.nome} (${p.meses} meses): de ${reais(p.de)} por ${reais(p.por)} à vista, ou ${PARCELAS_BF}x de ${reais(p.parcela)} sem juros no cartão. Equivale a ${reais(p.porMes)} por mês. Inclui ${BONUS_BF}.${p.exclusivo ? ` Exclusivo deste plano: ${p.exclusivo.toLowerCase()}.` : ""}`).join("\n")}
+${PLANOS_BF.map((p) => `- Plano ${p.nome} (${p.meses} meses): de ${reais(p.de)} por ${reais(p.por)} à vista, ou ${parcelamento(p)} no cartão. Equivale a ${reais(p.porMes)} por mês. Inclui ${BONUS_BF}.${p.exclusivo ? ` Exclusivo deste plano: ${p.exclusivo.toLowerCase()}.` : ""}`).join("\n")}
 
 ## Os três bônus da Black (em todos os planos)
 

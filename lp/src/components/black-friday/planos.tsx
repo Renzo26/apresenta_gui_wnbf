@@ -11,7 +11,7 @@ import medalha from "@/assets/jayme-medalha.jpg";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { MagneticButton } from "@/components/ui/magnetic-button";
 import { SplitReveal } from "@/components/ui/split-reveal";
-import { BONUS_BF, BONUS_LISTA_BF, DESCONTO_BF, INCLUSO_BF, PARCELAS_BF, PLANOS_BF, ctaPlano, reais, valor, type PlanoBF } from "@/lib/black-friday";
+import { BONUS_BF, BONUS_LISTA_BF, DESCONTO_BF, INCLUSO_BF, PARCELAS_BF, PLANOS_BF, ctaPlano, parcelamento, reais, valor, type PlanoBF } from "@/lib/black-friday";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -49,7 +49,7 @@ export function BfPlanos() {
             </SplitReveal>
           </div>
           <p className="max-w-md text-[1.05rem] leading-relaxed text-ink/70 lg:col-span-5 lg:justify-self-end">
-            À vista ou em {PARCELAS_BF}x sem juros no cartão, e todos levam {BONUS_BF}. O botão abre o WhatsApp com o plano escolhido.
+            À vista ou em {PARCELAS_BF}x sem juros no cartão (o semestral também em até 6x e o anual em até 10x, com juros), e todos levam {BONUS_BF}. O botão abre o WhatsApp com o plano escolhido.
           </p>
         </div>
 
@@ -67,7 +67,7 @@ export function BfPlanos() {
               </h3>
               <Preco plano={anual} className="mt-5" />
               <ul className="mt-5 space-y-2 text-[0.95rem] leading-snug text-carvao/85">
-                {[`Ou ${PARCELAS_BF}x de ${reais(anual.parcela)} sem juros no cartão`, ...(anual.extra ? [anual.extra] : [])].map((t) => (
+                {[`Ou ${parcelamento(anual)} no cartão`, ...(anual.extra ? [anual.extra] : [])].map((t) => (
                   <li key={t} className="flex gap-2.5">
                     <Bolinha /> {t}
                   </li>
@@ -111,7 +111,7 @@ function CardMenor({ plano: p }: { plano: PlanoBF }) {
       <div>
         <Preco plano={p} escuro />
         <p className="mt-3 text-sm text-bone/65">
-          {reais(p.porMes)}/mês · ou {PARCELAS_BF}x de {reais(p.parcela)} sem juros
+          {reais(p.porMes)}/mês · ou {parcelamento(p)}
         </p>
       </div>
       <Incluso plano={p} escuro />
