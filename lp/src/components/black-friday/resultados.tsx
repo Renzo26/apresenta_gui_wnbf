@@ -20,6 +20,9 @@ import aluno3Antes from "@/assets/aluno-antes-bf.jpg";
 import aluno3Depois from "@/assets/aluno-depois-bf.jpg";
 import warleyAntes from "@/assets/warley-antes.jpg";
 import warleyDepois from "@/assets/warley-depois.jpg";
+// aluna da Black: montagens prontas (fevereiro x dezembro de 2024), exibidas inteiras
+import aluna7FrenteCostas from "@/assets/resultados/aluna7-frente-costas.jpg";
+import aluna7Perfil from "@/assets/resultados/aluna7-perfil.jpg";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { SplitReveal } from "@/components/ui/split-reveal";
 import { DEPOIMENTOS_COMPLETOS } from "@/lib/content";
@@ -75,6 +78,27 @@ export function BfResultados() {
           </div>
 
           <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5">
+            <li className="res-card overflow-hidden rounded-[1.75rem] bg-carvao text-bone sm:col-span-2 lg:col-span-3">
+              <div className="grid gap-1.5 p-1.5 lg:grid-cols-[1fr_1fr_0.85fr]">
+                {[
+                  { img: aluna7FrenteCostas, alt: "Aluna da consultoria de frente e de costas: fevereiro e dezembro de 2024" },
+                  { img: aluna7Perfil, alt: "Aluna da consultoria de perfil: fevereiro e dezembro de 2024" },
+                ].map((f) => (
+                  <div key={f.alt} className="relative aspect-square overflow-hidden rounded-[1.25rem] bg-grafite">
+                    <Image src={f.img} alt={f.alt} fill placeholder="blur" sizes="(min-width: 1024px) 420px, 95vw" className="object-cover" />
+                  </div>
+                ))}
+                <div className="flex flex-col justify-center p-5 sm:p-7">
+                  <p className="flex items-baseline gap-2">
+                    <span className="font-display text-5xl leading-none text-ouro">10 meses</span>
+                  </p>
+                  <p className="mt-2 text-xs font-bold uppercase tracking-[0.14em] text-bone/70">de fevereiro a dezembro de 2024</p>
+                  <p className="mt-5 text-[0.95rem] leading-relaxed text-bone/80">
+                    A mesma aluna, nos mesmos ângulos: frente, costas e perfil em fevereiro e em dezembro de 2024.
+                  </p>
+                </div>
+              </div>
+            </li>
             {RESULTADOS.map((r, i) => (
               <li key={i} className="res-card flex flex-col overflow-hidden rounded-[1.75rem] bg-carvao text-bone">
                 {/* fotos inteiras: cada uma no mesmo quadro, sem recorte; o espaço que sobra é a própria foto desfocada */}
