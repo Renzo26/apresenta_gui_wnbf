@@ -24,6 +24,11 @@ import warleyDepois from "@/assets/warley-depois.jpg";
 import aluna7FrenteCostas from "@/assets/resultados/aluna7-frente-costas.jpg";
 import aluna7Perfil from "@/assets/resultados/aluna7-perfil.jpg";
 import aluna8 from "@/assets/resultados/aluna8.jpg";
+// alunas da Black: fotos recortadas das montagens do Canva (sem a tela do app)
+import aluna9Antes from "@/assets/resultados/aluna9-antes.jpg";
+import aluna9Depois from "@/assets/resultados/aluna9-depois.jpg";
+import aluna10Antes from "@/assets/resultados/aluna10-antes.jpg";
+import aluna10Depois from "@/assets/resultados/aluna10-depois.jpg";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { SplitReveal } from "@/components/ui/split-reveal";
 import { DEPOIMENTOS_COMPLETOS } from "@/lib/content";
@@ -58,7 +63,27 @@ const DESTAQUES: { titulo: string; periodo: string; texto: string; fotos: { img:
   },
 ];
 
-const RESULTADOS = DEPOIMENTOS_COMPLETOS.map((d, i) => ({ ...d, antes: FOTOS[i][0], depois: FOTOS[i][1] }));
+/** Casos só desta página (os de DEPOIMENTOS_COMPLETOS são os mesmos da página da consultoria). */
+const EXTRAS_BF: ((typeof DEPOIMENTOS_COMPLETOS)[number] & { antes: StaticImageData; depois: StaticImageData })[] = [
+  {
+    resultado: "59,7 → 59,85",
+    rotulo: "kg na balança",
+    texto: "Praticamente o mesmo peso e um corpo bem diferente: mais definição na cintura, no abdômen e nas pernas.",
+    antes: aluna10Antes,
+    depois: aluna10Depois,
+  },
+  {
+    resultado: "Evolução",
+    rotulo: "de costas",
+    texto: "Costas e cintura mais secas, com treino e dieta ajustados à rotina dela.",
+    antes: aluna9Antes,
+    depois: aluna9Depois,
+  },
+];
+
+const RESULTADOS = [...EXTRAS_BF, ...DEPOIMENTOS_COMPLETOS.map((d, i) => ({ ...d, antes: FOTOS[i][0], depois: FOTOS[i][1] }))];
+/** Grade de 3 colunas (6 trilhas no lg): se a última linha ficar com 2 cards, ela vai para o centro. */
+const SOBRA = RESULTADOS.length % 3;
 
 /** Resultados como na página da consultoria: um card por aluno com antes/depois (foto inteira), resultado e depoimento. */
 export function BfResultados() {
@@ -97,12 +122,12 @@ export function BfResultados() {
             </div>
           </div>
 
-          <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5">
+          <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-6 lg:gap-5">
             {DESTAQUES.map((d) => (
               <li
                 key={d.titulo + d.periodo}
                 className={`res-card flex flex-col overflow-hidden rounded-[1.75rem] bg-carvao text-bone sm:col-span-2 ${
-                  d.fotos.length > 1 ? "lg:col-span-2" : "sm:grid sm:grid-cols-2 sm:items-center lg:col-span-1 lg:flex lg:items-stretch"
+                  d.fotos.length > 1 ? "lg:col-span-4" : "sm:grid sm:grid-cols-2 sm:items-center lg:col-span-2 lg:flex lg:items-stretch"
                 }`}
               >
                 <div className={`grid gap-1.5 p-1.5 ${d.fotos.length > 1 ? "sm:grid-cols-2" : ""}`}>
@@ -120,7 +145,12 @@ export function BfResultados() {
               </li>
             ))}
             {RESULTADOS.map((r, i) => (
-              <li key={i} className="res-card flex flex-col overflow-hidden rounded-[1.75rem] bg-carvao text-bone">
+              <li
+                key={i}
+                className={`res-card flex flex-col overflow-hidden rounded-[1.75rem] bg-carvao text-bone lg:col-span-2 ${
+                  SOBRA === 2 && i === RESULTADOS.length - 2 ? "lg:col-start-2" : ""
+                }`}
+              >
                 {/* fotos inteiras: cada uma no mesmo quadro, sem recorte; o espaço que sobra é a própria foto desfocada */}
                 <div className="grid grid-cols-2 gap-1.5 p-1.5">
                   {[
