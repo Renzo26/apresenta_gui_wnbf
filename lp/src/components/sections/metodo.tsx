@@ -47,7 +47,7 @@ export function Metodo() {
         <div className="mx-auto grid max-w-7xl gap-14 lg:grid-cols-12">
           <div className="lg:col-span-5">
             <div className="lg:sticky lg:top-32">
-              <Eyebrow index="03" className="text-bone/60">
+              <Eyebrow index="04" className="text-bone/60">
                 Como funciona
               </Eyebrow>
               <SplitReveal className="mt-6 font-display text-[clamp(2.8rem,5.5vw,5.2rem)] uppercase leading-[0.92]">

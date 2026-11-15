@@ -56,7 +56,7 @@ export function Resultados() {
         {/* no mobile: título em cima e carrossel embaixo; no desktop: uma única linha que desliza */}
         <div ref={trackRef} className="lg:flex lg:w-max lg:items-center lg:gap-5 lg:px-10">
           <div className="px-6 sm:px-10 lg:w-[25rem] lg:shrink-0 lg:px-0 lg:pr-8">
-            <Eyebrow index="04" className="text-bone/70">
+            <Eyebrow index="05" className="text-bone/70">
               Resultados
             </Eyebrow>
             <h2 className="mt-6 font-display text-[clamp(2.8rem,5vw,4.8rem)] uppercase leading-[0.92]">
