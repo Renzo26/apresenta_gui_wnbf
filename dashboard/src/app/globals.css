@@ -1,0 +1,153 @@
+@import "tailwindcss";
+
+@custom-variant claro (&:where([data-tema="light"], [data-tema="light"] *));
+
+@theme {
+  /* Mesma marca do site e do CRM: azul-noite do logo DLM, índigo, bronze da medalha WNBF */
+  --color-fundo: var(--t-fundo);
+  --color-painel: var(--t-painel);
+  --color-painel-2: var(--t-painel-2);
+  --color-linha: var(--t-linha);
+  --color-texto: var(--t-texto);
+  --color-suave: var(--t-suave);
+  --color-apagado: var(--t-apagado);
+  --color-indigo: #2a2fb8;
+  --color-indigo-claro: var(--t-indigo-claro);
+  --color-destaque: var(--t-destaque);
+  --color-bronze: var(--t-bronze);
+  --color-ouro: #f0c541;
+  --color-ok: var(--t-ok);
+  --color-erro: var(--t-erro);
+
+  /* Séries dos gráficos: ordem fixa, validada para daltonismo nos dois temas (ver lib/cores.ts) */
+  --color-s1: var(--t-s1);
+  --color-s2: var(--t-s2);
+  --color-s3: var(--t-s3);
+  --color-s4: var(--t-s4);
+
+  --font-display: var(--font-anton), "Arial Narrow", sans-serif;
+  --font-serif: var(--font-instrument), Georgia, serif;
+  --font-sans: var(--font-manrope), system-ui, sans-serif;
+
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+:root {
+  color-scheme: dark;
+  /* escuro em grafite neutro (como a página da Black); índigo e bronze só nos destaques */
+  --t-fundo: #0d0d0e;
+  --t-painel: #151517;
+  --t-painel-2: #1e1e21;
+  --t-linha: #2c2c30;
+  --t-texto: #f2efe8;
+  --t-suave: #b3b0a7;
+  --t-apagado: #87857e;
+  --t-destaque: #1c1c1f;
+  --t-indigo-claro: #8f94ff;
+  --t-bronze: #c9a25b;
+  --t-ok: #4ade80;
+  --t-erro: #f87171;
+  --t-s1: #7076f5;
+  --t-s2: #c98500;
+  --t-s3: #199e70;
+  --t-s4: #d95926;
+  --t-grade: rgba(179, 176, 167, 0.11);
+}
+
+:root[data-tema="light"] {
+  color-scheme: light;
+  --t-fundo: #f4f2ec;
+  --t-painel: #ffffff;
+  --t-painel-2: #eceaf4;
+  --t-linha: #dcd9e8;
+  --t-texto: #12131c;
+  --t-suave: #4b4e6b;
+  --t-apagado: #686b85;
+  --t-indigo-claro: #3a40c9;
+  --t-bronze: #8a6a2c;
+  --t-ok: #1b7f3b;
+  --t-erro: #c62828;
+  --t-s1: #4a50e0;
+  --t-s2: #c98500;
+  --t-s3: #139466;
+  --t-s4: #e2551f;
+  --t-grade: rgba(18, 19, 28, 0.07);
+  --t-destaque: #2a2fb8;
+}
+
+html {
+  background: var(--t-fundo);
+  color: var(--t-texto);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--t-fundo);
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--color-indigo);
+  color: #f2efe8;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+.lenis [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+/* Grão: tira o ar "digital liso" dos painéis (o mesmo do site) */
+.grain {
+  position: relative;
+  isolation: isolate;
+}
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: inherit;
+  opacity: 0.35;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Rolagem fina nas tabelas e listas */
+.rolagem {
+  scrollbar-width: thin;
+  scrollbar-color: var(--t-linha) transparent;
+}
+
+/* Hachura: segunda codificação das séries (impressão, alto contraste, daltonismo) */
+.hachura {
+  background-image: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.28) 0 1.5px, transparent 1.5px 6px);
+}
+
+@media (forced-colors: active) {
+  .serie-marca {
+    forced-color-adjust: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
