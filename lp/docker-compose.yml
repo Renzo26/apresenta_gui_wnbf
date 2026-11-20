@@ -15,6 +15,8 @@ x-banco: &banco
   DATABASE_NAME: ${DATABASE_NAME:-postgres}
   DATABASE_SCHEMA: ${DATABASE_SCHEMA:-paginas}
   DATABASE_SSL: ${DATABASE_SSL:-false}
+  # área de membros dos cursos (/curso-nutricao): schema próprio, separado dos leads
+  CURSO_SCHEMA: ${CURSO_SCHEMA:-area_membros}
 
 services:
   # Cria/atualiza o schema `paginas` (Alembic) e sai. A página só sobe se der certo.
@@ -51,6 +53,9 @@ services:
       META_GRAPH_VERSION: ${META_GRAPH_VERSION:-v24.0}
       # chave que o n8n manda no header x-n8n-token para usar /api/whatsapp/resposta
       N8N_WHATSAPP_TOKEN: ${N8N_WHATSAPP_TOKEN:-}
+      # Área de membros do curso (/curso-nutricao): chave que assina os cookies de login.
+      # Os admins do painel ficam no banco (area_membros.curso_admins), com a senha só como hash.
+      CURSO_SEGREDO: ${CURSO_SEGREDO:-}
     # O Easypanel faz o proxy (Traefik) e o HTTPS: não publique portas no host.
     # Aponte o domínio no painel para o serviço "lp", porta 3000.
     expose:
