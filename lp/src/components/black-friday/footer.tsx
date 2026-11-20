@@ -8,6 +8,8 @@ import { useRef } from "react";
 import { MagneticButton } from "@/components/ui/magnetic-button";
 import { SplitReveal } from "@/components/ui/split-reveal";
 import { BONUS_BF, DESCONTO_BF, PLANOS_BF, ctaPlano, reais } from "@/lib/black-friday";
+import { useCtaBF } from "@/components/black-friday/variante";
+
 import { CONTACT, PERFIL } from "@/lib/content";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -17,6 +19,7 @@ const ORDEM = [...PLANOS_BF].reverse();
 
 /** Fechamento: mesmo rodapé da LP, com um botão por plano e "BLACK DLM" subindo ao fundo. */
 export function BfFooter() {
+  const cta = useCtaBF();
   const ref = useRef<HTMLElement>(null);
 
   useGSAP(
@@ -52,7 +55,7 @@ export function BfFooter() {
             </div>
             <div className="flex flex-col gap-3 lg:col-span-5 lg:items-end">
               {ORDEM.map((p, i) => (
-                <MagneticButton key={p.id} href={ctaPlano(p)} external variant={i === 0 ? "ouro" : "outline-light"} className="w-full lg:w-80">
+                <MagneticButton key={p.id} href={cta.plano(p)} external variant={i === 0 ? "ouro" : "outline-light"} className="w-full lg:w-80">
                   {p.nome} · {reais(p.por)}
                 </MagneticButton>
               ))}

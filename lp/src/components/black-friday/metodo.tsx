@@ -5,15 +5,16 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useRef } from "react";
 import { Eyebrow } from "@/components/ui/eyebrow";
+import { useCtaBF } from "@/components/black-friday/variante";
 import { MagneticButton } from "@/components/ui/magnetic-button";
 import { SplitReveal } from "@/components/ui/split-reveal";
-import { CTA_BF } from "@/lib/black-friday";
 import { METODO } from "@/lib/content";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 /** O que vem na consultoria: os 5 passos, título fixo à esquerda e linha amarela que se preenche com o scroll. */
 export function BfMetodo() {
+  const cta = useCtaBF();
   const ref = useRef<HTMLElement>(null);
 
   useGSAP(
@@ -57,7 +58,7 @@ export function BfMetodo() {
               <p className="mt-6 max-w-sm leading-relaxed text-bone/65">
                 O desconto é no preço, não no acompanhamento: é a mesma consultoria completa, com o plano do seu tamanho e evoluindo com você.
               </p>
-              <MagneticButton href={CTA_BF} external variant="ouro" className="mt-10">
+              <MagneticButton href={cta.geral} external={cta.geralExterno} variant="ouro" className="mt-10">
                 Quero a Black
               </MagneticButton>
             </div>

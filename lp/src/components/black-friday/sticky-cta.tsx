@@ -2,10 +2,12 @@
 
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "motion/react";
 import { useState } from "react";
-import { CTA_BF, DESCONTO_BF } from "@/lib/black-friday";
+import { useCtaBF } from "@/components/black-friday/variante";
+import { DESCONTO_BF } from "@/lib/black-friday";
 
 /** No celular, mantém o CTA da Black à mão depois que o hero sai da tela (mesmo da LP). */
 export function BfStickyCta() {
+  const cta = useCtaBF();
   const { scrollY } = useScroll();
   const [visivel, setVisivel] = useState(false);
 
@@ -26,9 +28,8 @@ export function BfStickyCta() {
         >
           <div className="flex items-center gap-2 rounded-full bg-carvao/85 p-1.5 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.7)] ring-1 ring-ouro/20 backdrop-blur-xl">
             <a
-              href={CTA_BF}
-              target="_blank"
-              rel="noopener noreferrer"
+              href={cta.geral}
+              {...(cta.geralExterno ? { target: "_blank", rel: "noopener noreferrer" } : {})}
               className="flex-1 rounded-full bg-ouro py-3.5 text-center text-sm font-extrabold uppercase tracking-[0.08em] text-carvao active:scale-[0.98]"
             >
               Garantir {DESCONTO_BF}% OFF

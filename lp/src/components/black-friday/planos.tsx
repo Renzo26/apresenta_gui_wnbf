@@ -11,7 +11,8 @@ import medalha from "@/assets/jayme-medalha.jpg";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { MagneticButton } from "@/components/ui/magnetic-button";
 import { SplitReveal } from "@/components/ui/split-reveal";
-import { BONUS_BF, BONUS_LISTA_BF, DESCONTO_BF, INCLUSO_BF, PARCELAS_BF, PLANOS_BF, ctaPlano, reais, valor, type PlanoBF } from "@/lib/black-friday";
+import { BONUS_BF, BONUS_LISTA_BF, DESCONTO_BF, INCLUSO_BF, PARCELAS_BF, PLANOS_BF, reais, valor, type PlanoBF } from "@/lib/black-friday";
+import { useCtaBF } from "@/components/black-friday/variante";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -20,6 +21,7 @@ const [trimestral, semestral, anual] = PLANOS_BF;
 /** Planos: o anual em destaque, grande e com foto; trimestral e semestral empilhados ao lado (grade 7/5, como os caminhos da LP). */
 export function BfPlanos() {
   const ref = useRef<HTMLElement>(null);
+  const cta = useCtaBF();
 
   useGSAP(
     () => {
@@ -49,7 +51,7 @@ export function BfPlanos() {
             </SplitReveal>
           </div>
           <p className="max-w-md text-[1.05rem] leading-relaxed text-ink/70 lg:col-span-5 lg:justify-self-end">
-            À vista ou em {PARCELAS_BF}x sem juros no cartão (o semestral também em até 6x e o anual em até 10x, com juros), e todos levam {BONUS_BF}. O botão abre o WhatsApp com o plano escolhido.
+            À vista ou em {PARCELAS_BF}x sem juros no cartão (o semestral também em até 6x e o anual em até 10x, com juros), e todos levam {BONUS_BF}. {cta.direta ? "O botão leva direto ao pagamento seguro." : "O botão abre o WhatsApp com o plano escolhido."}
           </p>
         </div>
 
@@ -69,7 +71,7 @@ export function BfPlanos() {
               <Checks itens={[...outrasFormas(anual), ...(anual.extra ? [anual.extra] : [])]} className="mt-5" />
               <Incluso plano={anual} className="mt-6" />
               <div className="flex-1" />
-              <MagneticButton href={ctaPlano(anual)} external variant="carvao" className="mt-8 w-full sm:w-auto sm:self-start">
+              <MagneticButton href={cta.plano(anual)} external variant="carvao" className="mt-8 w-full sm:w-auto sm:self-start">
                 Quero o anual
               </MagneticButton>
             </div>
@@ -92,6 +94,7 @@ export function BfPlanos() {
 }
 
 function CardMenor({ plano: p }: { plano: PlanoBF }) {
+  const cta = useCtaBF();
   return (
     <motion.article
       whileHover={{ y: -6 }}
@@ -107,7 +110,7 @@ function CardMenor({ plano: p }: { plano: PlanoBF }) {
         <Checks itens={outrasFormas(p)} escuro className="mt-5" />
       </div>
       <Incluso plano={p} escuro />
-      <MagneticButton href={ctaPlano(p)} external variant="ouro" className="w-full sm:w-auto sm:self-start">
+      <MagneticButton href={cta.plano(p)} external variant="ouro" className="w-full sm:w-auto sm:self-start">
         Quero esse
       </MagneticButton>
     </motion.article>

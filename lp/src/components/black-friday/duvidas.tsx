@@ -5,10 +5,13 @@ import { Plus } from "lucide-react";
 import { useState } from "react";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { SplitReveal } from "@/components/ui/split-reveal";
-import { CTA_BF, FAQ_BF } from "@/lib/black-friday";
+import { CTA_BF } from "@/lib/black-friday";
+import { useCtaBF } from "@/components/black-friday/variante";
+
 
 /** FAQ da Black, mesmo acordeão da LP. */
 export function BfDuvidas() {
+  const cta = useCtaBF();
   const [aberta, setAberta] = useState<number | null>(0);
 
   return (
@@ -29,7 +32,7 @@ export function BfDuvidas() {
         </div>
 
         <ul className="lg:col-span-7 lg:col-start-6">
-          {FAQ_BF.map((f, i) => {
+          {cta.faq.map((f, i) => {
             const open = aberta === i;
             return (
               <li key={f.p} className="border-b border-carvao/12 first:border-t">

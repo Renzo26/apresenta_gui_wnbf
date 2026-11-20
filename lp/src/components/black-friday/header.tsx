@@ -4,7 +4,8 @@ import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "motion/
 import { useLenis } from "lenis/react";
 import { useState } from "react";
 import { Logo } from "@/components/sections/header";
-import { CTA_BF, DESCONTO_BF } from "@/lib/black-friday";
+import { useCtaBF } from "@/components/black-friday/variante";
+import { DESCONTO_BF } from "@/lib/black-friday";
 import { cn } from "@/lib/utils";
 
 const LINKS = [
@@ -17,6 +18,7 @@ const LINKS = [
 
 /** Mesmo header da LP: some ao descer, volta ao subir, menu em tela cheia no celular. */
 export function BfHeader() {
+  const cta = useCtaBF();
   const { scrollY } = useScroll();
   const [hidden, setHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -65,9 +67,8 @@ export function BfHeader() {
 
           <div className="flex items-center gap-2">
             <a
-              href={CTA_BF}
-              target="_blank"
-              rel="noopener noreferrer"
+              href={cta.geral}
+              {...(cta.geralExterno ? { target: "_blank", rel: "noopener noreferrer" } : {})}
               className="hidden rounded-full bg-ouro px-5 py-2 text-sm font-bold text-carvao transition-colors duration-300 hover:bg-bone sm:inline-flex"
             >
               Garantir {DESCONTO_BF}% OFF
@@ -114,7 +115,7 @@ export function BfHeader() {
                 </motion.li>
               ))}
             </ul>
-            <a href={CTA_BF} target="_blank" rel="noopener noreferrer" className="rounded-full bg-ouro py-4 text-center font-bold uppercase tracking-wide text-carvao">
+            <a href={cta.geral} {...(cta.geralExterno ? { target: "_blank", rel: "noopener noreferrer" } : {})} className="rounded-full bg-ouro py-4 text-center font-bold uppercase tracking-wide text-carvao">
               Garantir {DESCONTO_BF}% OFF
             </a>
           </motion.div>

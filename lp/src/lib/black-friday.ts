@@ -84,6 +84,14 @@ export const ctaPlano = (p: PlanoBF) =>
 
 export const CTA_BF = whatsappUrl("Olá! Quero saber mais sobre a Black Friday da consultoria.");
 
+/** Página /direta: os botões dos planos vão direto para o checkout (sem passar pelo WhatsApp). */
+export const CHECKOUT_BF: Record<PlanoBF["id"], string> = {
+  trimestral: "https://clkdmg.site/subscribe/trimestral-black-dlm",
+  semestral: "https://clkdmg.site/subscribe/semestral-black-dlm",
+  anual: "https://clkdmg.site/subscribe/anual-black-dlm",
+};
+export const HOST_CHECKOUT_BF = "clkdmg.site";
+
 const anual = PLANOS_BF[2];
 const tri = PLANOS_BF[0];
 
