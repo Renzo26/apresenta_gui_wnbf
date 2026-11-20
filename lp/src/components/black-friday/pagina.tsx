@@ -1,3 +1,4 @@
+import { BfBonusCurso } from "@/components/black-friday/bonus-curso";
 import { BfDuvidas } from "@/components/black-friday/duvidas";
 import { BfFooter } from "@/components/black-friday/footer";
 import { BfHeader } from "@/components/black-friday/header";
@@ -40,6 +41,7 @@ export function PaginaBlack({ variante, jsonLd }: { variante: VarianteBF; jsonLd
           <div className="grain relative overflow-hidden rounded-[2rem] bg-bone sm:rounded-[2.75rem]">
             <BfPlanos />
             <BfStatement />
+            <BfBonusCurso />
           </div>
         </div>
 

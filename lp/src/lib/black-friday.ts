@@ -41,7 +41,9 @@ export const PLANOS_BF: PlanoBF[] = [
 
 export const BONUS_BF = "os três bônus da Black";
 /** Os três bônus da Black, iguais em todos os planos. */
-export const BONUS_LISTA_BF = ["Curso de Nutrição Prática", "E-book A Musculação para Naturais", `${DESCONTO_BF}% de desconto + ${PARCELAS_BF}x sem juros`];
+/** O curso bônus (o mesmo da área de membros /curso-nutricao). */
+export const CURSO_BONUS_BF = { nome: "Curso Nutrição Básica para Naturais", aulas: 19, modulos: 4, duracao: "Mais de 4 horas" };
+export const BONUS_LISTA_BF = [CURSO_BONUS_BF.nome, "E-book A Musculação para Naturais", `${DESCONTO_BF}% de desconto + ${PARCELAS_BF}x sem juros`];
 const bonusTexto = `${BONUS_LISTA_BF[0]}, ${BONUS_LISTA_BF[1]} e ${BONUS_LISTA_BF[2]}`;
 
 /** O que vem na consultoria: os mesmos itens da página da consultoria. */
