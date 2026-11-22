@@ -74,7 +74,7 @@ export function FormCheckout() {
 
     const utms = origem();
     const { plano } = destino;
-    registrarLead({
+    const registro = registrarLead({
       ...campos,
       nome: campos.nome.trim(),
       email: campos.email.trim(),
@@ -99,8 +99,9 @@ export function FormCheckout() {
     const url = new URL(destino.href);
     for (const [k, v] of Object.entries(utms)) if (!url.searchParams.has(k)) url.searchParams.set(k, v);
     setIndo(true);
-    // um respiro para o Pixel sair antes da troca de página (o lead já vai com keepalive)
-    setTimeout(() => window.location.assign(url.toString()), 350);
+    // espera o servidor dizer se é lead novo (e o Pixel sair), no máximo 1,5 s, e então abre o pagamento
+    const espera = new Promise((ok) => setTimeout(ok, 1500));
+    void Promise.race([registro.then(() => new Promise((ok) => setTimeout(ok, 250))), espera]).then(() => window.location.assign(url.toString()));
   };
 
   const campo = (nome: keyof Campos) => ({

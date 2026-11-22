@@ -75,7 +75,8 @@ export function BfLeadForm() {
     if (Object.keys(encontrados).length) return;
 
     const utms = origem();
-    registrarLead({
+    // não espera: o WhatsApp abre no mesmo clique (senão vira pop-up bloqueado)
+    void registrarLead({
       ...campos,
       nome: campos.nome.trim(),
       email: campos.email.trim(),

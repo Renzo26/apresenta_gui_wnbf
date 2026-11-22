@@ -40,10 +40,10 @@ export async function POST(req: Request) {
   }
 
   // campo invisível no formulário: só robô preenche. Responde ok e não grava.
-  if (texto(corpo.empresa, 200)) return Response.json({ ok: true });
+  if (texto(corpo.empresa, 200)) return Response.json({ ok: true, novo: false });
 
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "local";
-  if (passouDoLimite(ip)) return Response.json({ erro: "muitas tentativas" }, { status: 429 });
+  if (passouDoLimite(ip)) return Response.json({ erro: "muitas tentativas", novo: false }, { status: 429 });
 
   const campos = { nome: String(corpo.nome ?? ""), email: String(corpo.email ?? ""), telefone: String(corpo.telefone ?? "") };
   const erros = validar(campos);
@@ -72,9 +72,14 @@ export async function POST(req: Request) {
   };
 
   try {
+    // mesma pessoa (telefone ou e-mail) já mandou o formulário antes: grava de novo (a última visita e a
+    // campanha ficam no histórico), mas NÃO conta outro Lead na Meta — um Lead por pessoa no Gerenciador.
+    const [anterior] = await sql`select 1 from ${sql(SCHEMA)}.leads
+      where telefone = ${lead.telefone} or lower(email) = ${lead.email} limit 1`;
+    const novo = !anterior;
     await sql`insert into ${sql(SCHEMA)}.leads ${sql(lead)}`;
     const eventId = texto(corpo.eventId, 100);
-    if (eventId) {
+    if (eventId && novo) {
       // depois da resposta: a pessoa não espera a Meta
       after(() =>
         enviarLeadMeta({
@@ -92,7 +97,7 @@ export async function POST(req: Request) {
         }),
       );
     }
-    return Response.json({ ok: true }, { status: 201 });
+    return Response.json({ ok: true, novo }, { status: 201 });
   } catch (e) {
     console.error("[leads] falha ao gravar:", e instanceof Error ? e.message : e);
     return Response.json({ erro: "falha ao gravar" }, { status: 500 });

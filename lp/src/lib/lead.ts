@@ -51,23 +51,34 @@ export function planoDoLink(href: string) {
 
 /**
  * Registra o lead: grava no banco (POST /api/leads) e avisa as ferramentas de tráfego que estiverem
- * na página (GTM/GA e Meta Pixel). Não espera a resposta: o WhatsApp abre na hora, e o `keepalive`
- * garante que o envio termina mesmo se a pessoa sair da página.
+ * na página (GTM/GA e Meta Pixel). O `keepalive` garante que o envio termina mesmo se a pessoa sair da página.
+ *
+ * Um Lead por pessoa: o servidor responde `novo: false` quando o mesmo telefone ou e-mail já mandou o
+ * formulário antes, e aí nem o Pixel nem a API de Conversões contam de novo (a pessoa não vê diferença).
+ * Se o servidor não responder (rede, banco fora), o Pixel conta assim mesmo: melhor um a mais do que perder um.
+ * Devolve se o lead foi contado como novo.
  */
-export function registrarLead(lead: Lead) {
+export async function registrarLead(lead: Lead): Promise<boolean> {
   // mesmo id no Pixel e na API de Conversões: a Meta junta os dois e conta cada evento uma vez só.
   // O envio do formulário gera dois eventos: FormularioEnviado (personalizado) e Lead (padrão).
   const eventId = novoEventId();
-  fetch("/api/leads", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ ...lead, eventId, ...idsMeta() }),
-    keepalive: true,
-  }).catch(() => {});
+  let novo = true;
+  try {
+    const r = await fetch("/api/leads", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...lead, eventId, ...idsMeta() }),
+      keepalive: true,
+    });
+    const resposta = (await r.json().catch(() => ({}))) as { novo?: boolean };
+    if (resposta.novo === false) novo = false;
+  } catch {}
+  if (!novo) return false;
 
   const w = window as Window & { dataLayer?: unknown[] };
   w.dataLayer?.push({ event: "generate_lead", plano: lead.plano, origem: lead.origem, campanha: lead.utms.utm_campaign });
   const dados = { content_name: lead.plano ?? "Consultoria", content_category: "Black Friday", campanha: lead.utms.utm_campaign };
   eventoPersonalizado("FormularioEnviado", dados, `${eventId}-form`);
   evento("Lead", dados, eventId);
+  return true;
 }
