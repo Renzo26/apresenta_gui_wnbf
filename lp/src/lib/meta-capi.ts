@@ -20,8 +20,19 @@ export type LeadMeta = {
   campanha?: string | null;
 };
 
+/**
+ * Só o token em si. Se a linha da variável no Easypanel terminar com "\", a linha de baixo cola nela
+ * (aconteceu: "EAA...ZDZDN8N_WHATSAPP_TOKEN=..." e a Meta respondia "Malformed access token").
+ * Token da Meta não tem espaço, "\" nem "=": corta no primeiro deles e numa variável colada.
+ */
+function tokenLimpo(v?: string) {
+  return v
+    ?.replace(/(N8N_[A-Z_]+|META_[A-Z_]+|CURSO_[A-Z_]+|DATABASE_[A-Z_]+|NEXT_PUBLIC_[A-Z_]+)=[\s\S]*$/, "")
+    .split(/[\s\\=]/)[0];
+}
+
 export async function enviarLeadMeta(l: LeadMeta) {
-  const token = process.env.META_CAPI_TOKEN;
+  const token = tokenLimpo(process.env.META_CAPI_TOKEN);
   const pixel = process.env.META_PIXEL_ID || process.env.NEXT_PUBLIC_META_PIXEL_ID;
   if (!token || !pixel) return;
 

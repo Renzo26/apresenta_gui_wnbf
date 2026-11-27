@@ -3,7 +3,8 @@
 // O gestor de tráfego coloca nos anúncios:
 //   utm_source=meta&utm_medium=pago&utm_campaign={{campaign.name}}&utm_content={{ad.name}}&utm_term={{adset.name}}
 // A origem fica guardada no navegador por 30 dias: se a pessoa chega pelo anúncio, navega pelo site
-// e só depois clica no WhatsApp, a campanha não se perde. Um anúncio novo substitui a origem anterior.
+// e só depois clica no WhatsApp, a campanha não se perde. Um anúncio novo substitui a origem anterior;
+// uma volta sem campanha (só fbclid, bio, story) não apaga a campanha guardada.
 
 const CHAVE = "dlm-origem";
 const VALIDADE_MS = 30 * 24 * 60 * 60 * 1000;
@@ -20,24 +21,48 @@ function daUrl() {
   return p;
 }
 
+type Salvo = { p: Record<string, string>; em: number };
+
+function lerSalvo(): Salvo | null {
+  try {
+    const s = JSON.parse(localStorage.getItem(CHAVE) ?? "null") as Salvo | null;
+    return s && Date.now() - s.em < VALIDADE_MS ? s : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Junta a visita atual com a origem guardada. Um anúncio novo (com utm_campaign) substitui a anterior.
+ * Uma volta SEM campanha (link do Instagram que só traz fbclid, bio, story, direct) não apaga uma campanha
+ * dos últimos 30 dias: a pessoa conheceu pelo anúncio e voltou por outro caminho, como a Meta também conta.
+ * Devolve a origem e se ela mudou (para não renovar o prazo de 30 dias numa volta orgânica).
+ */
+function combinar(atual: Record<string, string>): { p: Record<string, string>; manteve: Salvo | null } {
+  if (atual.utm_campaign) return { p: atual, manteve: null };
+  const salvo = lerSalvo();
+  if (!salvo?.p.utm_campaign) return { p: atual, manteve: null };
+  const p = { ...salvo.p };
+  if (atual.fbclid) p.fbclid = atual.fbclid;
+  if (atual.gclid) p.gclid = atual.gclid;
+  return { p, manteve: salvo };
+}
+
 /** Chamado ao abrir qualquer página: guarda a origem se a URL trouxer UTMs ou fbclid/gclid. */
 export function guardarOrigem() {
-  const p = daUrl();
-  if (!Object.keys(p).length) return;
+  const atual = daUrl();
+  if (!Object.keys(atual).length) return;
+  const { p, manteve } = combinar(atual);
   try {
-    localStorage.setItem(CHAVE, JSON.stringify({ p, em: Date.now() }));
+    localStorage.setItem(CHAVE, JSON.stringify({ p, em: manteve ? manteve.em : Date.now() }));
   } catch {}
 }
 
-/** UTMs da visita: as da URL atual ou, se não houver, as guardadas (até 30 dias). */
+/** UTMs da visita: as da URL atual (sem apagar uma campanha recente) ou, se não houver, as guardadas (até 30 dias). */
 export function origem(): Record<string, string> {
-  const p = daUrl();
-  if (Object.keys(p).length) return p;
-  try {
-    const salvo = JSON.parse(localStorage.getItem(CHAVE) ?? "null") as { p: Record<string, string>; em: number } | null;
-    if (salvo && Date.now() - salvo.em < VALIDADE_MS) return salvo.p;
-  } catch {}
-  return {};
+  const atual = daUrl();
+  if (Object.keys(atual).length) return combinar(atual).p;
+  return lerSalvo()?.p ?? {};
 }
 
 /** Campanha da visita em forma de código: minúsculas, sem espaço nem acento ("direto" sem campanha). */
