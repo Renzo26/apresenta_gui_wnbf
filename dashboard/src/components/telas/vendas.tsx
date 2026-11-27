@@ -128,7 +128,7 @@ export function Vendas() {
       </Painel>
 
       <div className="mt-4 grid gap-4 lg:grid-cols-12">
-        <Painel className="lg:col-span-7" titulo="Quando as conversas chegam" subtitulo="Conversas iniciadas por dia da semana e hora (últimos 60 dias). Use para escalar o atendimento e programar os anúncios.">
+        <Painel className="lg:col-span-7" titulo="Quando as conversas chegam" subtitulo="Conversas iniciadas por dia da semana e hora (últimos 90 dias). Use para escalar o atendimento e programar os anúncios.">
           <MapaCalor matriz={dados.conversasPorHora} rotulo="Mapa de calor das conversas por dia da semana e hora" />
         </Painel>
         <Painel

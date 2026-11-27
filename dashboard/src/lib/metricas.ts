@@ -1,4 +1,4 @@
-import { carregarDados, diasEntre, INICIO_BLACK, PLANOS, type Dados, type ISO, type LinhaAnuncio, type LinhaOrganica, type PaginaId, type Plano } from "@/lib/dados";
+import { diasEntre, INICIO_BLACK, PLANOS, type Dados, type ISO, type LinhaAnuncio, type LinhaOrganica, type PaginaId, type Plano } from "@/lib/dados";
 
 // ---------- filtros ----------
 export type Periodo = { inicio: ISO; fim: ISO };
@@ -10,7 +10,7 @@ export const PRESETS: { id: PresetId; nome: string }[] = [
   { id: "14d", nome: "14 dias" },
   { id: "30d", nome: "30 dias" },
   { id: "black", nome: "Black Friday" },
-  { id: "tudo", nome: "60 dias" },
+  { id: "tudo", nome: "90 dias" },
 ];
 
 const somarDias = (iso: ISO, n: number) => {
@@ -41,6 +41,7 @@ export type Totais = {
   cliques: number;
   sessoes: number;
   leads: number;
+  leadsMeta: number;
   conversas: number;
   grupo: number;
   vendas: number;
@@ -57,6 +58,7 @@ const zerado = (): Totais => ({
   cliques: 0,
   sessoes: 0,
   leads: 0,
+  leadsMeta: 0,
   conversas: 0,
   grupo: 0,
   vendas: 0,
@@ -79,6 +81,7 @@ export function somar(linhas: LinhaQualquer[]): Totais {
     t.thruplay += l.thruplay ?? 0;
     t.sessoes += l.sessoes;
     t.leads += l.leads;
+    t.leadsMeta += l.leadsMeta ?? 0;
     t.conversas += l.conversas;
     t.grupo += l.grupo;
     t.faturamento += l.faturamento;
@@ -91,20 +94,23 @@ export function somar(linhas: LinhaQualquer[]): Totais {
 }
 
 const div = (a: number, b: number) => (b > 0 ? a / b : null);
+/** Custo só existe com investimento: sem a Meta conectada (ou sem gasto) mostra "—", não R$ 0,00. */
+const custo = (investimento: number, b: number) => (investimento > 0 ? div(investimento, b) : null);
 
 export function derivados(t: Totais) {
   return {
-    cpm: div(t.investimento * 1000, t.impressoes),
+    cpm: t.investimento > 0 ? div(t.investimento * 1000, t.impressoes) : null,
     ctr: div(t.cliques * 100, t.impressoes),
-    cpc: div(t.investimento, t.cliques),
+    cpc: custo(t.investimento, t.cliques),
     frequencia: div(t.impressoes, t.alcance),
     connectRate: div(t.sessoes * 100, t.cliques),
-    custoSessao: div(t.investimento, t.sessoes),
+    custoSessao: custo(t.investimento, t.sessoes),
     taxaLead: div(t.leads * 100, t.sessoes),
-    cpl: div(t.investimento, t.leads),
-    custoConversa: div(t.investimento, t.conversas),
+    cpl: custo(t.investimento, t.leads),
+    cplMeta: custo(t.investimento, t.leadsMeta),
+    custoConversa: custo(t.investimento, t.conversas),
     taxaFechamento: div(t.vendas * 100, t.conversas),
-    cac: div(t.investimento, t.vendas),
+    cac: custo(t.investimento, t.vendas),
     roas: div(t.faturamento, t.investimento),
     ticket: div(t.faturamento, t.vendas),
     hookRate: div(t.video3s * 100, t.impressoes),
@@ -146,7 +152,6 @@ export function agrupar<T>(linhas: T[], chave: (l: T) => string) {
   return m;
 }
 
-export { carregarDados };
 
 // ---------- formatação ----------
 const nf = (o: Intl.NumberFormatOptions) => new Intl.NumberFormat("pt-BR", o);

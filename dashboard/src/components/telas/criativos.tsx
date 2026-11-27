@@ -2,11 +2,11 @@
 
 import { Crown, Play, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { GraficoLinhas } from "@/components/graficos/linhas";
 import { BarrasH } from "@/components/graficos/simples";
 import { usePainel } from "@/components/providers";
+import { ImagemCriativo } from "@/components/ui/imagem-criativo";
 import { Cabecalho } from "@/components/shell";
 import { Revelar, Segmentado } from "@/components/ui/base";
 import { Painel, Tabela } from "@/components/ui/painel";
@@ -93,13 +93,11 @@ export function Criativos() {
                 className="group grain flex h-full w-full flex-col overflow-hidden rounded-[1.6rem] border border-linha bg-painel text-left transition-colors hover:border-indigo-claro focus-visible:border-indigo-claro focus-visible:outline-none"
               >
                 <div className="relative aspect-[4/3] overflow-hidden bg-painel-2">
-                  <Image
-                    src={it.c.imagem}
+                  <ImagemCriativo
+                    imagem={it.c.imagem}
                     alt=""
-                    fill
-                    placeholder="blur"
                     sizes="(min-width: 1536px) 22vw, (min-width: 1280px) 30vw, (min-width: 640px) 45vw, 92vw"
-                    className="object-cover transition-transform duration-700 ease-soft group-hover:scale-[1.04]"
+                    className="transition-transform duration-700 ease-soft group-hover:scale-[1.04]"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#0b0b0c]/85 via-[#0b0b0c]/10 to-transparent" />
                   <span className="absolute left-3 top-3 rounded-full bg-[#0b0b0c]/70 px-2.5 py-1 text-[0.62rem] font-bold uppercase tracking-[0.14em] text-[#f2efe8] backdrop-blur">
@@ -209,7 +207,7 @@ function Detalhe({ item, aoFechar }: { item: Item | null; aoFechar: () => void }
             transition={{ type: "spring", stiffness: 300, damping: 34 }}
           >
             <div className="relative aspect-[4/3] bg-painel-2">
-              <Image src={item.c.imagem} alt={`Criativo: ${item.c.nome}`} fill placeholder="blur" sizes="576px" className="object-cover" />
+              <ImagemCriativo imagem={item.c.imagem} alt={`Criativo: ${item.c.nome}`} sizes="576px" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0b0b0c] via-transparent to-transparent" />
               <button
                 type="button"
@@ -228,7 +226,9 @@ function Detalhe({ item, aoFechar }: { item: Item | null; aoFechar: () => void }
               </div>
             </div>
             <div className="space-y-5 p-5 sm:p-6">
-              <blockquote className="rounded-2xl border border-linha bg-painel p-4 font-serif text-xl italic leading-snug text-texto">“{item.c.copy}”</blockquote>
+              {item.c.copy && (
+                <blockquote className="rounded-2xl border border-linha bg-painel p-4 font-serif text-xl italic leading-snug text-texto">“{item.c.copy}”</blockquote>
+              )}
               <dl className="grid grid-cols-3 gap-3">
                 {[
                   ["Investimento", fmt.brl0(item.t.investimento)],
@@ -265,9 +265,13 @@ function Detalhe({ item, aoFechar }: { item: Item | null; aoFechar: () => void }
                   />
                 </div>
               </div>
-              <p className={cn("text-[0.7rem] text-apagado")}>
-                Dados de exemplo. Na versão ligada à Meta, aqui entra o vídeo/imagem real do anúncio e o link para abrir no Gerenciador.
-              </p>
+              {item.c.link ? (
+                <a href={item.c.link} target="_blank" rel="noopener noreferrer" className={cn("inline-block text-xs font-semibold text-indigo-claro hover:underline")}>
+                  Ver a prévia do anúncio na Meta ↗
+                </a>
+              ) : (
+                <p className="text-[0.7rem] text-apagado">Anúncio identificado pelas UTMs (utm_content). Com a Meta Ads conectada, aparecem a imagem e o link da prévia.</p>
+              )}
             </div>
           </motion.aside>
         </>

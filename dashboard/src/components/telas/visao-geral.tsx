@@ -15,7 +15,7 @@ import { fmt, porDia, somar, variacao } from "@/lib/metricas";
 import { SERIES } from "@/lib/utils";
 
 export function VisaoGeral() {
-  const { atual, antes, ads, adsAntes, d, dAntes, comparar } = usePainel();
+  const { dados, atual, antes, ads, adsAntes, d, dAntes, comparar } = usePainel();
   const dia = useMemo(() => porDia(atual.anuncios, atual.dias), [atual]);
   const v = (a: number | null, b: number | null) => (comparar ? variacao(a, b) : undefined);
 
@@ -91,7 +91,7 @@ export function VisaoGeral() {
       {/* KPIs */}
       <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6 sm:gap-4">
         <Kpi rotulo="Investimento" valor={ads.investimento} formato={fmt.brl0} delta={v(ads.investimento, adsAntes.investimento)} serie={dia.map((x) => x.investimento)} nota={`${fmt.brl(d.cpm)} de CPM`} />
-        <Kpi rotulo="Leads" valor={ads.leads} formato={fmt.int} delta={v(ads.leads, adsAntes.leads)} serie={dia.map((x) => x.leads)} nota={`CPL ${fmt.brl(d.cpl)}`} />
+        <Kpi rotulo="Leads" valor={ads.leads} formato={fmt.int} delta={v(ads.leads, adsAntes.leads)} serie={dia.map((x) => x.leads)} nota={dados.fontes.meta ? `Meta atribui ${fmt.int(ads.leadsMeta)} · CPL ${fmt.brl(d.cpl)}` : `CPL ${fmt.brl(d.cpl)}`} />
         <Kpi rotulo="Conversas" valor={ads.conversas} formato={fmt.int} delta={v(ads.conversas, adsAntes.conversas)} serie={dia.map((x) => x.conversas)} nota={`${fmt.brl(d.custoConversa)} por conversa`} />
         <Kpi rotulo="Vendas" valor={ads.vendas} formato={fmt.int} delta={v(ads.vendas, adsAntes.vendas)} serie={dia.map((x) => x.vendas)} nota={`CAC ${fmt.brl(d.cac)}`} />
         <Kpi rotulo="Ticket médio" valor={d.ticket} formato={fmt.brl0} delta={v(d.ticket, dAntes.ticket)} nota="Por venda das campanhas" />

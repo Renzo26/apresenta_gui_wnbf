@@ -1,11 +1,11 @@
 "use client";
 
-import { BadgeDollarSign, Images, LayoutDashboard, Megaphone, Moon, PanelLeftClose, PanelLeftOpen, PanelsTopLeft, Sun } from "lucide-react";
+import { ArrowLeft, BadgeDollarSign, Images, LayoutDashboard, Megaphone, Moon, PanelLeftClose, PanelLeftOpen, PanelsTopLeft, RefreshCw, Sun, TriangleAlert } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSyncExternalStore, type ReactNode } from "react";
-import { useFiltros, usePainel, useTema } from "@/components/providers";
+import { useDados, useFiltros, usePainel, useTema } from "@/components/providers";
 import { Segmentado } from "@/components/ui/base";
 import { PAGINAS, type PaginaId } from "@/lib/dados";
 import { fmt, PRESETS } from "@/lib/metricas";
@@ -50,6 +50,11 @@ export function Shell({ children }: { children: ReactNode }) {
   const caminho = usePathname();
   const [recolhido, setRecolhido] = useMenuRecolhido();
   const [tema, setTema] = useTema();
+  const { dados, erro, atualizar, atualizando } = useDados();
+
+  // tela de acesso: sem menu e sem dados
+  if (caminho === "/acesso") return <>{children}</>;
+  if (!dados) return <Carregando erro={erro} aoTentar={atualizar} carregando={atualizando} />;
 
   return (
     <div className="flex min-h-svh">
@@ -112,19 +117,30 @@ export function Shell({ children }: { children: ReactNode }) {
             {tema === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />}
             {!recolhido && (tema === "dark" ? "Tema claro" : "Tema escuro")}
           </button>
-          {!recolhido && (
-            <p className="text-[0.68rem] leading-relaxed text-apagado">
-              <span className="mb-1 inline-block rounded-full border border-bronze/50 px-2 py-0.5 font-bold uppercase tracking-[0.14em] text-bronze">Dados de exemplo</span>
-              <br />
-              Meta Ads + páginas + CRM, cruzados pelo código da campanha.
-            </p>
+          {!recolhido && <Fontes />}
+          {!recolhido && dados.crmUrl && (
+            <a href={dados.crmUrl} className="flex items-center gap-2 text-xs font-semibold text-suave hover:text-texto">
+              <ArrowLeft className="size-4" /> Voltar ao CRM
+            </a>
           )}
         </div>
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col pb-20 lg:pb-0">
         <BarraFiltros />
-        <main className="mx-auto w-full max-w-[1500px] flex-1 px-4 pb-16 pt-6 sm:px-8 sm:pt-8">{children}</main>
+        <main className="mx-auto w-full max-w-[1500px] flex-1 px-4 pb-16 pt-6 sm:px-8 sm:pt-8">
+          {dados.avisos.length > 0 && (
+            <ul className="mb-6 space-y-2">
+              {dados.avisos.map((a) => (
+                <li key={a} className="flex items-start gap-2.5 rounded-2xl border border-bronze/40 bg-bronze/[0.07] px-4 py-3 text-xs leading-relaxed text-suave">
+                  <TriangleAlert className="mt-px size-4 shrink-0 text-bronze" aria-hidden />
+                  {a}
+                </li>
+              ))}
+            </ul>
+          )}
+          {children}
+        </main>
       </div>
 
       {/* menu inferior (celular/tablet) */}
@@ -152,6 +168,7 @@ export function Shell({ children }: { children: ReactNode }) {
 function BarraFiltros() {
   const { filtros, setFiltros } = useFiltros();
   const { periodo, dados } = usePainel();
+  const { atualizar, atualizando } = useDados();
   const [tema, setTema] = useTema();
   const atualizado = new Date(dados.atualizadoEm).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
 
@@ -207,6 +224,16 @@ function BarraFiltros() {
         </p>
         <button
           type="button"
+          onClick={atualizar}
+          disabled={atualizando}
+          className="hidden rounded-full border border-linha p-2 text-suave hover:text-texto disabled:opacity-50 md:block"
+          aria-label="Atualizar os dados agora"
+          title="Atualizar agora"
+        >
+          <RefreshCw className={cn("size-3.5", atualizando && "animate-spin")} />
+        </button>
+        <button
+          type="button"
           onClick={() => setTema(tema === "dark" ? "light" : "dark")}
           className="ml-auto rounded-full border border-linha p-2 text-suave md:ml-0 lg:hidden"
           aria-label={tema === "dark" ? "Usar tema claro" : "Usar tema escuro"}
@@ -234,5 +261,56 @@ export function Cabecalho({ indice, titulo, acento, descricao }: { indice: strin
       </div>
       <p className="max-w-md text-sm leading-relaxed text-suave lg:col-span-4 lg:justify-self-end">{descricao}</p>
     </header>
+  );
+}
+
+/** De onde vêm os números (rodapé do menu). */
+function Fontes() {
+  const { dados } = useDados();
+  if (!dados) return null;
+  const itens = dados.fontes.exemplo
+    ? [{ nome: "Dados de exemplo", ok: false }]
+    : [
+        { nome: "CRM + formulários", ok: dados.fontes.banco },
+        { nome: dados.fontes.meta ? "Meta Ads" : "Meta Ads (não conectada)", ok: dados.fontes.meta },
+      ];
+  return (
+    <ul className="space-y-1.5 text-[0.68rem] text-apagado">
+      {itens.map((i) => (
+        <li key={i.nome} className="flex items-center gap-2">
+          <span className={cn("size-1.5 rounded-full", i.ok ? "bg-ok" : "bg-bronze")} aria-hidden />
+          {i.nome}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function Carregando({ erro, aoTentar, carregando }: { erro: string | null; aoTentar: () => void; carregando: boolean }) {
+  return (
+    <div className="grid min-h-svh place-items-center px-6 text-center">
+      <div>
+        <p className="font-display text-5xl uppercase leading-none">
+          DLM<span className="text-bronze">.</span>
+        </p>
+        {erro ? (
+          <>
+            <p className="mt-6 text-sm text-suave">Não foi possível carregar os dados ({erro}).</p>
+            <button
+              type="button"
+              onClick={aoTentar}
+              disabled={carregando}
+              className="mt-4 rounded-full border border-linha px-5 py-2 text-xs font-bold uppercase tracking-[0.14em] text-texto hover:border-indigo-claro disabled:opacity-50"
+            >
+              Tentar de novo
+            </button>
+          </>
+        ) : (
+          <p className="mt-6 flex items-center justify-center gap-2 text-sm text-suave">
+            <RefreshCw className="size-4 animate-spin" aria-hidden /> Carregando os números do CRM e das campanhas…
+          </p>
+        )}
+      </div>
+    </div>
   );
 }

@@ -1,0 +1,47 @@
+# Dashboard do gestor de tráfego — Easypanel, serviço Docker Compose (pasta dashboard/ do repositório).
+# Lê o banco do Supabase (schemas `crm` e `paginas`, só leitura) e, se configurada, a Meta Ads.
+# Acesso só pelo botão "Dashboard do gestor" do CRM (mesmo JWT_SECRET do CRM em CRM_JWT_SECRET).
+
+services:
+  gestor:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      HOSTNAME: 0.0.0.0
+      # Só chega ao container o que está listado aqui.
+      DATABASE_USER: ${DATABASE_USER:-postgres}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD:?defina DATABASE_PASSWORD}
+      DATABASE_HOST: ${DATABASE_HOST:-db}
+      DATABASE_PORT: ${DATABASE_PORT:-5432}
+      DATABASE_NAME: ${DATABASE_NAME:-postgres}
+      DATABASE_SCHEMA: ${DATABASE_SCHEMA:-paginas}
+      CRM_SCHEMA: ${CRM_SCHEMA:-crm}
+      DATABASE_SSL: ${DATABASE_SSL:-false}
+      # o mesmo JWT_SECRET do serviço crm (confere o passe do botão)
+      CRM_JWT_SECRET: ${CRM_JWT_SECRET:?defina CRM_JWT_SECRET}
+      # endereço público deste dashboard e do CRM (com https, sem barra no fim)
+      DASH_URL: ${DASH_URL:-}
+      CRM_URL: ${CRM_URL:-}
+      # Meta Ads (opcional): token com ads_read e o ID da conta de anúncios
+      META_ADS_TOKEN: ${META_ADS_TOKEN:-}
+      META_AD_ACCOUNT_ID: ${META_AD_ACCOUNT_ID:-}
+      META_GRAPH_VERSION: ${META_GRAPH_VERSION:-v24.0}
+    # O Easypanel faz o proxy e o HTTPS: aponte o domínio para o serviço "gestor", porta 3000.
+    expose:
+      - "3000"
+    networks:
+      - default
+      - supabase
+    deploy:
+      resources:
+        limits:
+          memory: 384M
+
+networks:
+  supabase:
+    external: true
+    name: ${SUPABASE_NETWORK:-portal_atletas_supabase_default}

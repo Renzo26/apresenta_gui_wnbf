@@ -2,3 +2,7 @@
 node_modules
 next-env.d.ts
 *.tsbuildinfo
+
+# segredos locais (o .env.example vai para o Git)
+.env*
+!.env.example
